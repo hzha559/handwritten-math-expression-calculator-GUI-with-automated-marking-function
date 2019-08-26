@@ -1,0 +1,11 @@
+{
+	"deviceID": 1,
+	"accessionList": "AccessionList.txt",
+	"dicomPath": "D:/Dropbox/Fungal/FungalAI Image/uitest/Dicoms/",
+	"annotationPath": "D:/Dropbox/Fungal/FungalAI Image/uitest/Annotations/",
+	"reportsFileName": "Reports.xlsx"
+
+
+
+
+}
