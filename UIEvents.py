@@ -250,7 +250,9 @@ class UIEvents():
 
     def DrawFilledPolygon(self):
         pointvector = np.array(self.CurrentDrawPointVector,np.int32)
-        cv2.fillPoly(self.CurrentLabel, [pointvector], 255)
+        #cv2.fillPoly(self.CurrentLabel, [pointvector], 255)
+        #polylines(img, pts, isClosed, color, thickness)
+        cv2.polylines(self.CurrentLabel, [pointvector], 0, 255, 1)
         self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
