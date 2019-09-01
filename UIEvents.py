@@ -211,13 +211,13 @@ class UIEvents():
 
     def on_touch_move(self, x, touch):
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
-        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 512:
+        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 1024:
             # print "Mouse Up ( " + str(self.mouse_x) + " , " + str(self.mouse_y) + " )"
             if self.DrawInProgress and self.DrawStatus :
                 self.EditsMade = True
                 self.CurrentDrawPointVector.append([self.mouse_x,self.mouse_y])
                 # Display user drawing outline
-                if self.mouse_x < 1024 - 1 and self.mouse_x > 0 + 1 and self.mouse_y < 512 - 1 and self.mouse_y > 0 + 1:# 512 ->1024 dash line for entire image
+                if self.mouse_x < 1024 - 1 and self.mouse_x > 0 + 1 and self.mouse_y < 1024 - 1 and self.mouse_y > 0 + 1:# 512 ->1024 dash line for entire image
                     self.CurrentDisplayImage[self.mouse_y-1:self.mouse_y+1,self.mouse_x+5-1:self.mouse_x+5+1]=(250,100,100)#offest by 512 
                     self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
             
@@ -226,7 +226,7 @@ class UIEvents():
 
     def on_touch_up(self, x, touch):
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
-        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 512:#was 512
+        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 1024:#was 512
             if self.DrawInProgress and self.EraserStatus:
                 self.EditsMade = True
                 self.FloodFillBlob(self.mouse_x,self.mouse_y,0)
