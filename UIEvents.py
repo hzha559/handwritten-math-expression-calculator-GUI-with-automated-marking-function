@@ -71,8 +71,10 @@ class UIEvents():
 
     def EraseAllClick(self,event):
         self.EditsMade = True
-        self.CurrentLabel = self.BlankLabel.copy()
-        self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
+        #self.CurrentLabel = self.BlankLabel.copy()
+        self.CurrentLabel =np.zeros((1024,1024),np.uint8)
+        #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
+        self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((1024,1024),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
     def PrevSliceClick(self,event):
