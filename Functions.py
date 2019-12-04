@@ -24,6 +24,7 @@ def DrawContours(net_img, dicom_img):
     ret, threshHuman = cv2.threshold(net_img, 249, 255, 0)
     _, contours, _ = cv2.findContours(threshHuman, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(img, contours, -1, (255, 113, 17), 2)
+    cv2.drawContours(img, contours, -1, (255, 113, 17), 2)#???????????
     # # draw orange for machine
     # ret, threshMachine = cv2.threshold(net_img, 254, 255, 0)
     # _, contours, _ = cv2.findContours(threshMachine, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)

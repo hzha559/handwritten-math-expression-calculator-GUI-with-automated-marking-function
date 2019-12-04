@@ -62,7 +62,10 @@ class UIEvents():
         self.EraserStatus = False
         self.EditsMade = False
         p = fx.SetPNGCompression(0)
-        cv2.imwrite(self.CurrentLabelPath,self.CurrentLabel, p)
+        #cv2.imwrite(self.CurrentLabelPath,self.CurrentLabel, p)
+        print(self.CurrentDisplayImage.shape)
+        #original=cv2.imread(self.CurrentDisplayImage)
+        cv2.imwrite('save.jpg', self.CurrentDisplayImage)
 
     def DontSaveDrawingClick(self,event):
         self.DrawStatus = False
@@ -254,7 +257,7 @@ class UIEvents():
         pointvector = np.array(self.CurrentDrawPointVector,np.int32)
         #cv2.fillPoly(self.CurrentLabel, [pointvector], 255)
         #polylines(img, pts, isClosed, color, thickness)
-        cv2.polylines(self.CurrentLabel, [pointvector], 0, 255, 1)
+        cv2.polylines(self.CurrentLabel, [pointvector], 0, (255,255,255))
         self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 

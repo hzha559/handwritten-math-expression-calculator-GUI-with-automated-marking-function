@@ -76,7 +76,7 @@ class WorkPanel(RelativeLayout):
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
         self.add_widget(btnEraseAll)
-
+'''
         btnPrevSlice = Button(text="Prev. Slice (a)")
         btnPrevSlice.size_hint = (None, None)
         btnPrevSlice.size = (130, 40)
@@ -156,7 +156,7 @@ class WorkPanel(RelativeLayout):
         btnDebugMode.color = (1, 1, 1, 1)
         btnDebugMode.bind(on_release=self.uievents.DebugModeClick)
         self.add_widget(btnDebugMode)
-
+'''
 
 class MainWindow(RelativeLayout):
 
