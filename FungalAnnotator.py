@@ -165,7 +165,8 @@ class MainWindow(RelativeLayout):
 
         ImageViewer = Image(source="")
         ImageViewer.size_hint = (None, None)
-        ImageViewer.size = (1029, 512)
+        #ImageViewer.size = (1029, 512)
+        ImageViewer.size = (1021, 576)
         ImageViewer.pos = (0,240)
         self.add_widget(ImageViewer)
 

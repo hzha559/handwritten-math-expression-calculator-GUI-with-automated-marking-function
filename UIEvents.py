@@ -250,15 +250,15 @@ class UIEvents():
         self.DrawInProgress = False
 
     def ConvertToImageCoords(self,x,y):
-        #c = x - 5#
+        c = x#
         #r = 512 + 40 + 200 - y
-        if x>400:
-            c = x-(510-x)*0.10
+        #if x>400:
+            #c = x-(510-x)*0.10
         
-        else:
-            c = x-(510-x)*0.10
+        #else:
+            #c = x-(510-x)*0.10
         
-        r = 800- y#keep it
+        r = 800- y+20#keep it
         c = int(round(c))#nothing to change here
         r = int(round(r))
         return c,r

@@ -26,14 +26,26 @@ def DrawContours(net_img, dicom_img):
     #_, 
     contours, _ = cv2.findContours(threshHuman, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(img, contours, -1, (255, 113, 17), 2)
-    cv2.drawContours(img, contours, -1, (255, 255, 255), 5)# this affect the actual color of drawing
+    cv2.drawContours(img, contours, -1, (255, 255, 255), 3)# this affect the actual color of drawing
     # # draw orange for machine
     # ret, threshMachine = cv2.threshold(net_img, 254, 255, 0)
     # _, contours, _ = cv2.findContours(threshMachine, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # cv2.drawContours(img, contours, -1, (17, 113, 255), 2)
 
     return img
+def CreateDisplayImage(dicom, label):
+    img = DrawContours(label, dicom)
+    # img = MergeImages(dicom, img, 5)
+    return img
 
+def RenderDisplayImage(img):
+    img = cv2.flip(img, 0)
+    texture = Texture.create(size=(1021, 576), colorfmt="bgr")
+    #texture = Texture.create(size=(1024, 768), colorfmt="bgr")
+    s = img.flatten().astype(np.uint8)
+    texture.blit_buffer(s, pos=(0, 0), size=texture.size, bufferfmt="ubyte", colorfmt="bgr")
+    return texture
+'''
 # Function to merge two images horizontally separated by vertical white line of thickness "gap"
 def MergeImages(leftimage, rightimage, gap):
     height = leftimage.shape[0]
@@ -44,17 +56,7 @@ def MergeImages(leftimage, rightimage, gap):
     comp_img[:, height + gap:, :] = rightimage
     return comp_img
 
-def CreateDisplayImage(dicom, label):
-    img = DrawContours(label, dicom)
-    # img = MergeImages(dicom, img, 5)
-    return img
 
-def RenderDisplayImage(img):
-    img = cv2.flip(img, 0)
-    texture = Texture.create(size=(1021, 576), colorfmt="bgr")
-    s = img.flatten().astype(np.uint8)
-    texture.blit_buffer(s, pos=(0, 0), size=texture.size, bufferfmt="ubyte", colorfmt="bgr")
-    return texture
 
 def SaveScanLabel(settings, acc, key, label):
     path = os.path.join(settings['annotationPath'],str(settings['deviceID']),acc,'ScanLabel_'+acc+'.json')
@@ -75,3 +77,4 @@ def SaveSliceLabel(settings, acc, slice, key, label):
     contents[key] = label
     with open(path,'w') as f:
         json.dump(contents,f)
+'''
