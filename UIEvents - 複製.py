@@ -218,15 +218,14 @@ class UIEvents():
 
     def on_touch_move(self, x, touch):
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
-        if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576:
+        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 1024:
             # print "Mouse Up ( " + str(self.mouse_x) + " , " + str(self.mouse_y) + " )"
             if self.DrawInProgress and self.DrawStatus :
                 self.EditsMade = True
                 self.CurrentDrawPointVector.append([self.mouse_x,self.mouse_y])
                 # Display user drawing outline
-                if self.mouse_x < 1021 - 1 and self.mouse_x > 0 + 1 and self.mouse_y < 576 - 1 and self.mouse_y > 0 + 1:# 512 ->1024 dash line for entire image
-                    #self.CurrentDisplayImage[self.mouse_y-1:self.mouse_y+1,self.mouse_x+5-1:self.mouse_x+5+1]=(250,100,100)#offest by 512 
-                    self.CurrentDisplayImage[self.mouse_y-1:self.mouse_y+1,self.mouse_x-1:self.mouse_x+1]=(250,100,100)
+                if self.mouse_x < 1024 - 1 and self.mouse_x > 0 + 1 and self.mouse_y < 1024 - 1 and self.mouse_y > 0 + 1:# 512 ->1024 dash line for entire image
+                    self.CurrentDisplayImage[self.mouse_y-1:self.mouse_y+1,self.mouse_x+5-1:self.mouse_x+5+1]=(250,100,100)#offest by 512 
                     self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
             
     def on_touch_down(self, x, touch):
@@ -234,13 +233,13 @@ class UIEvents():
 
     def on_touch_up(self, x, touch):
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
-        if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576:#was 512
+        if self.mouse_x >= 0 and self.mouse_x < 1024 and self.mouse_y >= 0 and self.mouse_y < 1024:#was 512
             if self.DrawInProgress and self.EraserStatus:
                 self.EditsMade = True
                 self.FloodFillBlob(self.mouse_x,self.mouse_y,0)
             if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0:
                 self.EditsMade = True
-                if len(self.CurrentDrawPointVector) > 0:#was 10
+                if len(self.CurrentDrawPointVector) > 10:
                     self.DrawFilledPolygon()
                 else:
                     self.CurrentDisplayImage = np.array(cv2.imread('cat.jpg'),np.uint8)
@@ -250,15 +249,8 @@ class UIEvents():
         self.DrawInProgress = False
 
     def ConvertToImageCoords(self,x,y):
-        #c = x - 5#
-        #r = 512 + 40 + 200 - y
-        if x>400:
-            c = x-(510-x)*0.10
-        
-        else:
-            c = x-(510-x)*0.10
-        
-        r = 800- y#keep it
+        c = x - 5#
+        r = 512 + 40 + 200 - y
         c = int(round(c))#nothing to change here
         r = int(round(r))
         return c,r
@@ -273,7 +265,7 @@ class UIEvents():
 
     def FloodFillBlob(self, x, y, i):
         if self.CurrentLabel[y,x]!= i:
-            mask = np.zeros((576 + 2, 1021 + 2), np.uint8)#was 512
+            mask = np.zeros((1024 + 2, 1024 + 2), np.uint8)#was 512
             cv2.floodFill(self.CurrentLabel,mask,(x,y),i,0,0, cv2.FLOODFILL_FIXED_RANGE | 8)
             self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
             self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
