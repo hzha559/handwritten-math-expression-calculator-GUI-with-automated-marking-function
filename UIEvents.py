@@ -10,7 +10,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 import struct
-
+from kivy.uix.textinput import TextInput
 class UIEvents():
     def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder):
         self.ImageViewer = ImageViewer
@@ -43,6 +43,7 @@ class UIEvents():
         # Accept keyboard input
         self.Keyboard = Window.request_keyboard(
             self._keyboard_closed, self, 'text')
+        
         self.Keyboard.bind(on_key_down=self._on_keyboard_down)
 
         # Accept mouse input
@@ -81,7 +82,15 @@ class UIEvents():
         #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-
+    
+    def textfield(self,event):
+        textinput = TextInput(text='Hello world', multiline=False)
+        textinput.bind(on_text_validate=on_enter)
+        textinput = TextInput()
+        textinput.bind(text=on_text)
+        textinput = TextInput()
+        textinput.bind(focus=on_focus)
+    
     def PrevSliceClick(self,event):
         self.NextFunction = "PrevSliceClick"
         self.CheckEditsMade()
@@ -197,6 +206,10 @@ class UIEvents():
         # Keycode is composed of an integer + a string
         # If we hit escape, release the keyboard
         if not self.FreezeKeyboard:
+            print('keyboard input',keycode[1])
+            return keycode[1]
+            #textinput = TextInput(text='Hello world', multiline=False)
+            '''
             if keycode[1] == 'escape':
                 keyboard.release()
             elif keycode[1] == 'a':
@@ -207,6 +220,7 @@ class UIEvents():
                 self.PrevAccessionClick(event=None)
             elif keycode[1] == 'c':
                 self.NextAccessionClick(event=None)
+                '''
         # Return True to accept the key. Otherwise, it will be used by
         # the system.
         return True

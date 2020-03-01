@@ -13,6 +13,8 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from UIEvents import UIEvents
+from kivy.uix.textinput import TextInput
+
 
 class RadiologistGUI:
     def __init__(self):
@@ -76,6 +78,13 @@ class WorkPanel(RelativeLayout):
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
         self.add_widget(btnEraseAll)
+        
+        textinput=TextInput(multiline=False)
+        textinput.size_hint = (None, None)
+        textinput.size = (130, 40)
+        textinput.pos = (1040, 170)
+        #textinput.bind(text=self.uievents._on_keyboard_down)
+        self.add_widget(textinput)
 '''
         btnPrevSlice = Button(text="Prev. Slice (a)")
         btnPrevSlice.size_hint = (None, None)
@@ -169,13 +178,13 @@ class MainWindow(RelativeLayout):
         ImageViewer.size = (1021, 576)
         ImageViewer.pos = (0,240)
         self.add_widget(ImageViewer)
-
+        
         FilePath = Label(font_size="14sp", text="", color=(1,1,1,1),halign='left',text_size=(1000,100))
         FilePath.size_hint = (None, None)
         FilePath.size = (1000, 100)
         FilePath.pos = (20, 140)
         self.add_widget(FilePath)
-
+        
         TextReport = Label(font_size="14sp", text="", color=(1, 1, 1, 1), halign='left', text_size=(1300, 150))
         TextReport.size_hint = (None, None)
         TextReport.size = (1300, 150)
@@ -205,7 +214,7 @@ class MainWindow(RelativeLayout):
         WorkingPanel = WorkPanel(self.uievents)
         WorkingPanel.pos = (0,240)
         self.add_widget(WorkingPanel)
-
+        
     def on_stop(self):
         self.uievents.CheckEditsMade()
 

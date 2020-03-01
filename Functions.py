@@ -45,6 +45,23 @@ def RenderDisplayImage(img):
     s = img.flatten().astype(np.uint8)
     texture.blit_buffer(s, pos=(0, 0), size=texture.size, bufferfmt="ubyte", colorfmt="bgr")
     return texture
+
+def on_enter(instance, value):
+    print('User pressed enter in', instance)
+
+
+
+def on_text(instance, value):
+    print('The widget', instance, 'have:', value)
+
+def on_focus(instance, value):
+    if value:
+        print('User focused', instance)
+    else:
+        print('User defocused', instance)
+
+
+
 '''
 # Function to merge two images horizontally separated by vertical white line of thickness "gap"
 def MergeImages(leftimage, rightimage, gap):
