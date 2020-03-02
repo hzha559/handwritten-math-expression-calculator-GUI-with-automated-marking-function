@@ -18,6 +18,7 @@ class UIEvents():
         self.TextReport = TextReport
         self.StatusMessage = StatusMessage
         self.LabelReminder = LabelReminder
+        #self.textinput.text=textinput.text
         # self.DatasetPath = "C:/Users/MIME Project/Dropbox/MIME/Alfred FCN/uitest/"
         with open('Settings.json','r') as f:
             self.settings = json.load(f)
@@ -82,7 +83,7 @@ class UIEvents():
         #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-    
+    '''
     def textfield(self,event):
         textinput = TextInput(text='Hello world', multiline=False)
         textinput.bind(on_text_validate=on_enter)
@@ -90,7 +91,10 @@ class UIEvents():
         textinput.bind(text=on_text)
         textinput = TextInput()
         textinput.bind(focus=on_focus)
-    
+    '''
+    def Recognition(self,event,text):
+        print('recognized',text)
+        
     def PrevSliceClick(self,event):
         self.NextFunction = "PrevSliceClick"
         self.CheckEditsMade()
@@ -227,8 +231,10 @@ class UIEvents():
 
     def _keyboard_closed(self):
         print('My keyboard have been closed!')
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard = None
+        self.Keyboard.unbind(on_key_down=self._on_keyboard_down)####################
+        self.Keyboard = None############################################
+        #self._keyboard.unbind(on_key_down=self._on_keyboard_down)####################
+        #self._keyboard = None############################################
 
     def on_touch_move(self, x, touch):
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)

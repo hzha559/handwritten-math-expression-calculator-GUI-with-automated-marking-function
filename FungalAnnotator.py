@@ -83,8 +83,16 @@ class WorkPanel(RelativeLayout):
         textinput.size_hint = (None, None)
         textinput.size = (130, 40)
         textinput.pos = (1040, 170)
-        #textinput.bind(text=self.uievents._on_keyboard_down)
+        #textinput.bind(text=self.uievents.Recognition)
         self.add_widget(textinput)
+        
+        btnPrevSlice = Button(text="Recognition")
+        btnPrevSlice.size_hint = (None, None)
+        btnPrevSlice.size = (130, 40)
+        btnPrevSlice.pos = (1180, 170)
+        btnPrevSlice.color = (1, 1, 1, 1)
+        btnPrevSlice.bind(on_release=self.uievents.Recognition)
+        self.add_widget(btnPrevSlice)
 '''
         btnPrevSlice = Button(text="Prev. Slice (a)")
         btnPrevSlice.size_hint = (None, None)
