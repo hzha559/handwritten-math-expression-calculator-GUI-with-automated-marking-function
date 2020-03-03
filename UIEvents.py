@@ -11,13 +11,15 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 import struct
 from kivy.uix.textinput import TextInput
+import recognize
 class UIEvents():
-    def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder):
+    def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput):
         self.ImageViewer = ImageViewer
         self.FilePath = FilePath
         self.TextReport = TextReport
         self.StatusMessage = StatusMessage
         self.LabelReminder = LabelReminder
+        self.text=textinput
         #self.textinput.text=textinput.text
         # self.DatasetPath = "C:/Users/MIME Project/Dropbox/MIME/Alfred FCN/uitest/"
         with open('Settings.json','r') as f:
@@ -92,8 +94,9 @@ class UIEvents():
         textinput = TextInput()
         textinput.bind(focus=on_focus)
     '''
-    def Recognition(self,event,text):
-        print('recognized',text)
+    def Recognition(self,event):
+        recognize.f1()
+        print('recognized',self.text.text)
         
     def PrevSliceClick(self,event):
         self.NextFunction = "PrevSliceClick"

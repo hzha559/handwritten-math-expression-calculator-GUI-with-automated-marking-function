@@ -78,14 +78,14 @@ class WorkPanel(RelativeLayout):
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
         self.add_widget(btnEraseAll)
-        
+        '''
         textinput=TextInput(multiline=False)
         textinput.size_hint = (None, None)
         textinput.size = (130, 40)
         textinput.pos = (1040, 170)
-        #textinput.bind(text=self.uievents.Recognition)
+        textinput.bind(text=self.uievents.Recognition)
         self.add_widget(textinput)
-        
+        '''
         btnPrevSlice = Button(text="Recognition")
         btnPrevSlice.size_hint = (None, None)
         btnPrevSlice.size = (130, 40)
@@ -93,6 +93,7 @@ class WorkPanel(RelativeLayout):
         btnPrevSlice.color = (1, 1, 1, 1)
         btnPrevSlice.bind(on_release=self.uievents.Recognition)
         self.add_widget(btnPrevSlice)
+        
 '''
         btnPrevSlice = Button(text="Prev. Slice (a)")
         btnPrevSlice.size_hint = (None, None)
@@ -216,8 +217,15 @@ class MainWindow(RelativeLayout):
         LabelReminder.text = ""
         LabelReminder.pos = (1050, 185)
         self.add_widget(LabelReminder)
+        
+        textinput=TextInput(multiline=False)
+        textinput.size_hint = (None, None)
+        textinput.size = (300, 40)#130,40
+        textinput.pos = (1040, 250)#1040,170
+        #textinput.bind(text=self.uievents.Recognition)
+        self.add_widget(textinput)
 
-        self.uievents = UIEvents(ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder)
+        self.uievents = UIEvents(ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput)
 
         WorkingPanel = WorkPanel(self.uievents)
         WorkingPanel.pos = (0,240)
