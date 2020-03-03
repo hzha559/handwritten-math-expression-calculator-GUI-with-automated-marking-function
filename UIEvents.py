@@ -12,6 +12,8 @@ from kivy.uix.button import Button
 import struct
 from kivy.uix.textinput import TextInput
 import recognize
+from kivy.app import App
+
 class UIEvents():
     def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput):
         self.ImageViewer = ImageViewer
@@ -77,6 +79,9 @@ class UIEvents():
         self.DrawStatus = False
         self.EraserStatus = False
         self.EditsMade = False
+    def Close(self,event):
+        App.get_running_app().stop()
+        Window.close()
 
     def EraseAllClick(self,event):
         self.EditsMade = True

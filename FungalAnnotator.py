@@ -94,6 +94,14 @@ class WorkPanel(RelativeLayout):
         btnPrevSlice.bind(on_release=self.uievents.Recognition)
         self.add_widget(btnPrevSlice)
         
+        Close = Button(text="Close")
+        Close.size_hint = (None, None)
+        Close.size = (130, 40)
+        Close.pos = (1040, 110)
+        Close.color = (1, 1, 1, 1)
+        Close.bind(on_release=self.uievents.Close)
+        self.add_widget(Close)
+        
 '''
         btnPrevSlice = Button(text="Prev. Slice (a)")
         btnPrevSlice.size_hint = (None, None)
