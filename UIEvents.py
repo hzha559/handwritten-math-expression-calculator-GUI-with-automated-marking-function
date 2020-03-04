@@ -265,7 +265,7 @@ class UIEvents():
         if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576:#was 512
             if self.DrawInProgress and self.EraserStatus:
                 self.EditsMade = True
-                self.FloodFillBlob(self.mouse_x,self.mouse_y,0)
+                self.FloodFillBlob(self.mouse_x,self.mouse_y,0)############
             if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0:
                 self.EditsMade = True
                 if len(self.CurrentDrawPointVector) > 0:#was 10
@@ -300,9 +300,12 @@ class UIEvents():
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
     def FloodFillBlob(self, x, y, i):
-        if self.CurrentLabel[y,x]!= i:
-            mask = np.zeros((576 + 2, 1021 + 2), np.uint8)#was 512
-            cv2.floodFill(self.CurrentLabel,mask,(x,y),i,0,0, cv2.FLOODFILL_FIXED_RANGE | 8)
+        #print(np.sum(self.CurrentLabel))
+        if self.CurrentLabel[y-20:y+20,x-20:x+20].any()!= i:
+            #print('erase')
+            self.CurrentLabel[y-20:y+20,x-20:x+20]= i
+            #mask = np.zeros((576 + 2, 1021 + 2), np.uint8)
+            #cv2.floodFill(self.CurrentLabel,mask,(x,y),255,0,0, cv2.FLOODFILL_FIXED_RANGE | 8)#i
             self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
             self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
