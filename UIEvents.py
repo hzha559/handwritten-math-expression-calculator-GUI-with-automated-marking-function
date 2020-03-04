@@ -102,7 +102,7 @@ class UIEvents():
     def Recognition(self,event):
         recognize.f1()
         print('recognized',self.text.text)
-        
+    '''        
     def PrevSliceClick(self,event):
         self.NextFunction = "PrevSliceClick"
         self.CheckEditsMade()
@@ -185,7 +185,7 @@ class UIEvents():
 
         self.CurrentImgIndex = 0
         self.LoadContent()
-
+        '''
 
 
     def LoadContent(self):
@@ -198,14 +198,14 @@ class UIEvents():
 
 
 
-        text = 'test test test'
+        text = ''
 
 
 
         self.FilePath.text = text
-
-        if scanLabelText == 'NO LABEL':
-            self.LabelReminder.text = 'Scan not labelled!'
+        a=3*4
+        if scanLabelText == 'NO LABEL':##########################can display result here
+            self.LabelReminder.text = 'calculated result== '+str(a)
         else:
             self.LabelReminder.text = ''
 
@@ -307,7 +307,7 @@ class UIEvents():
             self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
 
-
+'''
     def CheckEditsMade(self):
         if self.EditsMade:
             self.FreezeKeyboard = True
@@ -343,13 +343,13 @@ class UIEvents():
             self.FetchAccession(1)
 
         self.NextFunction = ""
-
-
-#########################################################################################################
+'''
 
 #########################################################################################################
 
+#########################################################################################################
 
+'''
 class ConfirmDialog(RelativeLayout):
 
     def __init__(self, uievents, **kwargs):
@@ -379,7 +379,7 @@ class ConfirmDialog(RelativeLayout):
         self.add_widget(btnDontSave)
         self.add_widget(btnSave)
 
-
+'''
 
 
 

@@ -41,10 +41,11 @@ class WorkPanel(RelativeLayout):
         Instructions.size = (270, 200)
         Instructions.pos = (1045, 330)
         Instructions.color = (1, 1, 1, 1)
-        Instructions.text = "Example text \n" \
-                            "Example text\n" \
+        Instructions.text = "Handwritten calculator \n" \
                             "\n" \
-                            "Example text\n"
+                            "First draw,then recognition, finally calculate\n" \
+                            "\n" \
+                            "Modify the recognized result in the text field\n"
         self.add_widget(Instructions)
 
         btnDraw = Button(text="Draw")
