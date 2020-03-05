@@ -102,6 +102,60 @@ class UIEvents():
     def Recognition(self,event):
         recognize.f1()
         print('recognized',self.text.text)
+    
+    def Calculate(self,event):
+        list=[]
+        string=self.text.text
+        calculate=False
+        empty=True
+        if string!= '':
+            empty=False
+            for a in string:
+                if a=='+' or a=='-' or a=='*' or a=='/' or a=='=' or a.isdigit()==True:
+                    calculate=True
+                else:
+                    calculate=False
+                    break
+        else:
+            calculate=False
+            empty=True
+        ###################################################################
+        #print(calculate)
+        if calculate==True:
+            if '=' not in string:
+                list.append(eval(string))
+                list.append('')
+                print(list)
+            else:
+                position=string.index('=')
+                if eval(string[position+1:])>0:
+                    if eval(string[position+1:])<(eval(string[0:position]))*1.1 and eval(string[position+1:])>(eval(string[0:position]))*0.9:
+                        list.append(eval(string[0:position]))
+                        list.append(True)
+                        print(list)
+                        #return list
+                    else:
+                        list.append(eval(string[0:position]))
+                        list.append(False)
+                        print(list)
+                else:
+                    if eval(string[position+1:])>(eval(string[0:position]))*1.1 and eval(string[position+1:])<(eval(string[0:position]))*0.9:
+                        list.append(eval(string[0:position]))
+                        list.append(True)
+                        print(list)
+                        #return list
+                    else:
+                        list.append(eval(string[0:position]))
+                        list.append(False)
+                        print(list)
+                        #return list
+        else:
+            self.LabelReminder.text = 'wrong expression'
+                    
+        if list!= []:##########################can display result here
+            self.LabelReminder.text = 'calculated result== '+str(list[0])+'  '+str(list[1])
+        elif empty==True:
+            self.LabelReminder.text = ''
     '''        
     def PrevSliceClick(self,event):
         self.NextFunction = "PrevSliceClick"
@@ -204,11 +258,12 @@ class UIEvents():
 
         self.FilePath.text = text
         a=3*4
+        '''
         if scanLabelText == 'NO LABEL':##########################can display result here
             self.LabelReminder.text = 'calculated result== '+str(a)
         else:
             self.LabelReminder.text = ''
-
+        '''
 ########################################
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         # print('The key', keycode[1], 'have been pressed')

@@ -90,7 +90,7 @@ class WorkPanel(RelativeLayout):
         btnPrevSlice = Button(text="Recognition")
         btnPrevSlice.size_hint = (None, None)
         btnPrevSlice.size = (130, 40)
-        btnPrevSlice.pos = (1180, 170)
+        btnPrevSlice.pos = (1040, 170)
         btnPrevSlice.color = (1, 1, 1, 1)
         btnPrevSlice.bind(on_release=self.uievents.Recognition)
         self.add_widget(btnPrevSlice)
@@ -103,15 +103,15 @@ class WorkPanel(RelativeLayout):
         Close.bind(on_release=self.uievents.Close)
         self.add_widget(Close)
         
-'''
-        btnPrevSlice = Button(text="Prev. Slice (a)")
-        btnPrevSlice.size_hint = (None, None)
-        btnPrevSlice.size = (130, 40)
-        btnPrevSlice.pos = (1040, 170)
-        btnPrevSlice.color = (1, 1, 1, 1)
-        btnPrevSlice.bind(on_release=self.uievents.PrevSliceClick)
-        self.add_widget(btnPrevSlice)
 
+        Calculate = Button(text="Calculate")
+        Calculate.size_hint = (None, None)
+        Calculate.size = (130, 40)
+        Calculate.pos = (1180, 170)
+        Calculate.color = (1, 1, 1, 1)
+        Calculate.bind(on_release=self.uievents.Calculate)
+        self.add_widget(Calculate)
+'''
         btnNextSlice = Button(text="Next Slice (d)")
         btnNextSlice.size_hint = (None, None)
         btnNextSlice.size = (130, 40)
