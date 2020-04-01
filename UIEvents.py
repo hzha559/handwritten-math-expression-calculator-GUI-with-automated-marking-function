@@ -148,60 +148,56 @@ class UIEvents():
         empty=True
         if string!= '':
             empty=False
-            if string[0] in ['+','*','/','=']:
-                calculate=False
-                #print(1)
+            if '=' not in string:#
+                try:
+                    result=eval(string)
+                    list.append(result)
+                    list.append('')
+                except:
+                    calculate=False 
+
             else:
-                for a in range(len(string)):
-                    if a>0 and (string[a] in ['+','-','*','/','='] and string[a-1] in ['+','-','*','/','=']):
-                        calculate=False
-                        break
-                        #print(2)
-                    elif a>0 and (string[a]in [0,'0'] and string[a-1]=='/'):
-                        calculate=False
-                        break
-                        #print(2)
-                    elif string[a] not in ['+','-','*','/','='] and string[a].isdigit()==False:
-                        calculate=False
-                        #print(3)
-                        break
-                    else:
-                        calculate=True
+                position=string.index('=')
+                try:
+                    left=eval(string[0:position])
+                    right=eval(string[position+1:])
+                    #print(left,right)
+                    if type(left)==int:
+                        if left==right:
+                            list.append(left)
+                            list.append(True)
+                        else:
+                            list.append(left)
+                            list.append(False)
+                            #print(list)
+                    else:#double
+                        if abs(np.round(left,2)-right)<abs(left*0.005):
+                            #print(left)
+                            list.append(left)
+                            list.append(True)
+                            #print(list)
+                        else:
+                            list.append(left)
+                            list.append(False)
+                            #print(list)
+                    
+                    
+                    
+                except:
+                    calculate=False 
+                    print('here')
+                
+                
+            
 
         else:
             calculate=False
             empty=True
         ###################################################################
         #print(calculate)
-        if calculate==True:
-            if '=' not in string:#
-                list.append(eval(string))
-                list.append('')
-                print(list)
-            else:
-                position=string.index('=')
-                if eval(string[position+1:])>0:
-                    if eval(string[position+1:])<(eval(string[0:position]))*1.1 and eval(string[position+1:])>(eval(string[0:position]))*0.9:
-                        list.append(eval(string[0:position]))
-                        list.append(True)
-                        print(list)
-                        #return list
-                    else:
-                        list.append(eval(string[0:position]))
-                        list.append(False)
-                        print(list)
-                else:
-                    if eval(string[position+1:])>(eval(string[0:position]))*1.1 and eval(string[position+1:])<(eval(string[0:position]))*0.9:
-                        list.append(eval(string[0:position]))
-                        list.append(True)
-                        print(list)
-                        #return list
-                    else:
-                        list.append(eval(string[0:position]))
-                        list.append(False)
-                        print(list)
-                        #return list
-        else:
+                
+                
+        if calculate==False and empty==False:
             self.LabelReminder.text = 'Wrong expression, please check it'
                     
         if list!= []:##########################can display result here
