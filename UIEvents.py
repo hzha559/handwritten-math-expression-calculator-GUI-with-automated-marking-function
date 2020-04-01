@@ -13,6 +13,21 @@ import struct
 from kivy.uix.textinput import TextInput
 import recognize
 from kivy.app import App
+#start=0
+from model import f1
+from model import f2
+
+
+
+
+
+    
+
+    
+    
+
+
+
 
 class UIEvents():
     def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput):
@@ -22,10 +37,12 @@ class UIEvents():
         self.StatusMessage = StatusMessage
         self.LabelReminder = LabelReminder
         self.text=textinput
+        self.model=f1()
+        #self.start=start
         #self.textinput.text=textinput.text
         # self.DatasetPath = "C:/Users/MIME Project/Dropbox/MIME/Alfred FCN/uitest/"
-        with open('Settings.json','r') as f:
-            self.settings = json.load(f)
+        #with open('Settings.json','r') as f:
+            #self.settings = json.load(f)
 
 
         self.curUnlabelAccIx = 0
@@ -72,8 +89,36 @@ class UIEvents():
         #cv2.imwrite(self.CurrentLabelPath,self.CurrentLabel, p)
         print(self.CurrentDisplayImage.shape)
         #original=cv2.imread(self.CurrentDisplayImage)
-        filename=str(np.random.randint(10000,size=1).item())
-        cv2.imwrite(filename+'.jpg', self.CurrentDisplayImage)
+        filename=str(np.random.randint(100000,size=1).item())
+        path='C:/Users/zhaoh/Downloads/FYP/dataset/test/'
+        cv2.imwrite(path+filename+'.jpg', self.CurrentDisplayImage)#add to training set
+        
+        
+        im=self.CurrentDisplayImage
+        path='sliced one/'
+        im1=im[217:312,12:98]#86,4
+        im2=im[217:312,102:188]
+        im3=im[217:312,192:278]
+        im4=im[217:312,282:368]
+        im5=im[217:312,372:458]
+        im6=im[217:312,462:548]
+        im7=im[217:312,552:638]
+        im8=im[217:312,642:728]
+        im9=im[217:312,732:818]
+        im10=im[217:312,822:908]
+        im11=im[217:312,912:998]
+         
+        cv2.imwrite(path+'1.jpg',im1)
+        cv2.imwrite(path+'2.jpg',im2)
+        cv2.imwrite(path+'3.jpg',im3)
+        cv2.imwrite(path+'4.jpg',im4)
+        cv2.imwrite(path+'5.jpg',im5)
+        cv2.imwrite(path+'6.jpg',im6)
+        cv2.imwrite(path+'7.jpg',im7)
+        cv2.imwrite(path+'8.jpg',im8)
+        cv2.imwrite(path+'9.jpg',im9) 
+        cv2.imwrite(path+'a.jpg',im10)
+        cv2.imwrite(path+'b.jpg',im11)
 
     def DontSaveDrawingClick(self,event):
         self.DrawStatus = False
@@ -100,7 +145,7 @@ class UIEvents():
         textinput.bind(focus=on_focus)
     '''
     def Recognition(self,event):
-        recognize.f1()
+        self.text.text=f2(self.model)##################################
         print('recognized',self.text.text)
     
     def Calculate(self,event):

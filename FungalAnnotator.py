@@ -13,6 +13,7 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from UIEvents import UIEvents
+from UIEvents import f1
 from kivy.uix.textinput import TextInput
 
 
@@ -233,7 +234,8 @@ class MainWindow(RelativeLayout):
         textinput.pos = (1040, 250)#1040,170
         #textinput.bind(text=self.uievents.Recognition)
         self.add_widget(textinput)
-
+        
+        f1()
         self.uievents = UIEvents(ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput)
 
         WorkingPanel = WorkPanel(self.uievents)
