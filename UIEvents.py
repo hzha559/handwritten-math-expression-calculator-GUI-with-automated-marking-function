@@ -19,16 +19,6 @@ from model import f2
 
 
 
-
-
-    
-
-    
-    
-
-
-
-
 class UIEvents():
     def __init__(self,ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput):
         self.ImageViewer = ImageViewer
@@ -38,6 +28,8 @@ class UIEvents():
         self.LabelReminder = LabelReminder
         self.text=textinput
         self.model=f1()
+        self.to_window=(0,0)
+        self.y=0
         #self.start=start
         #self.textinput.text=textinput.text
         # self.DatasetPath = "C:/Users/MIME Project/Dropbox/MIME/Alfred FCN/uitest/"
@@ -63,11 +55,12 @@ class UIEvents():
         self.LoadContent()
 
         # Accept keyboard input
+        '''
         self.Keyboard = Window.request_keyboard(
-            self._keyboard_closed, self, 'text')
+            self._keyboard_closed, self, 'text')##########################
         
         self.Keyboard.bind(on_key_down=self._on_keyboard_down)
-
+        '''
         # Accept mouse input
         Window.bind(on_touch_move=self.on_touch_move)
         Window.bind(on_touch_down=self.on_touch_down)
@@ -125,7 +118,7 @@ class UIEvents():
         self.EraserStatus = False
         self.EditsMade = False
     def Close(self,event):
-        App.get_running_app().stop()
+        #App.get_running_app().stop()
         Window.close()
 
     def EraseAllClick(self,event):
@@ -151,23 +144,37 @@ class UIEvents():
     def Calculate(self,event):
         list=[]
         string=self.text.text
-        calculate=False
+        calculate=True
         empty=True
         if string!= '':
             empty=False
-            for a in string:
-                if a=='+' or a=='-' or a=='*' or a=='/' or a=='=' or a.isdigit()==True:
-                    calculate=True
-                else:
-                    calculate=False
-                    break
+            if string[0] in ['+','*','/','=']:
+                calculate=False
+                #print(1)
+            else:
+                for a in range(len(string)):
+                    if a>0 and (string[a] in ['+','-','*','/','='] and string[a-1] in ['+','-','*','/','=']):
+                        calculate=False
+                        break
+                        #print(2)
+                    elif a>0 and (string[a]in [0,'0'] and string[a-1]=='/'):
+                        calculate=False
+                        break
+                        #print(2)
+                    elif string[a] not in ['+','-','*','/','='] and string[a].isdigit()==False:
+                        calculate=False
+                        #print(3)
+                        break
+                    else:
+                        calculate=True
+
         else:
             calculate=False
             empty=True
         ###################################################################
         #print(calculate)
         if calculate==True:
-            if '=' not in string:
+            if '=' not in string:#
                 list.append(eval(string))
                 list.append('')
                 print(list)
@@ -195,10 +202,10 @@ class UIEvents():
                         print(list)
                         #return list
         else:
-            self.LabelReminder.text = 'wrong expression'
+            self.LabelReminder.text = 'Wrong expression, please check it'
                     
         if list!= []:##########################can display result here
-            self.LabelReminder.text = 'calculated result== '+str(list[0])+'  '+str(list[1])
+            self.LabelReminder.text = 'Calculated result== '+str(list[0])+'  '+str(list[1])
         elif empty==True:
             self.LabelReminder.text = ''
     '''        
