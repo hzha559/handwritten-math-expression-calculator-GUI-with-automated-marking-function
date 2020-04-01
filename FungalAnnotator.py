@@ -26,7 +26,7 @@ class RadiologistGUI:
 class RootWidget(App):
     def build(self):
         self.Main = MainWindow()
-        return self.Main
+        return self.Main#
 
     def on_stop(self):
         self.Main.on_stop()
@@ -189,7 +189,7 @@ class WorkPanel(RelativeLayout):
 class MainWindow(RelativeLayout):
 
     def __init__(self,**kwargs):
-        super(MainWindow, self).__init__(**kwargs)
+        super(MainWindow, self).__init__(**kwargs)#########chang
 
         ImageViewer = Image(source="")
         ImageViewer.size_hint = (None, None)
@@ -235,7 +235,7 @@ class MainWindow(RelativeLayout):
         #textinput.bind(text=self.uievents.Recognition)
         self.add_widget(textinput)
         
-        f1()
+        
         self.uievents = UIEvents(ImageViewer,FilePath,TextReport,StatusMessage,LabelReminder,textinput)
 
         WorkingPanel = WorkPanel(self.uievents)
@@ -243,7 +243,7 @@ class MainWindow(RelativeLayout):
         self.add_widget(WorkingPanel)
         
     def on_stop(self):
-        self.uievents.CheckEditsMade()
+        App.get_running_app().stop()
 
 
 RadiologistGUI()
