@@ -11,6 +11,7 @@ from kivy.graphics.texture import Texture
 ########## RUN TIME FUNCTIONS ##########
 
 # Function to create parameters for PNG writing
+
 def SetPNGCompression(level):
     png_params = list()
     png_params.append(cv2.IMWRITE_PNG_COMPRESSION)
@@ -33,10 +34,6 @@ def DrawContours(net_img, dicom_img):
     # cv2.drawContours(img, contours, -1, (17, 113, 255), 2)
 
     return img
-def CreateDisplayImage(dicom, label):
-    img = DrawContours(label, dicom)
-    # img = MergeImages(dicom, img, 5)
-    return img
 
 def RenderDisplayImage(img):
     img = cv2.flip(img, 0)
@@ -46,52 +43,8 @@ def RenderDisplayImage(img):
     texture.blit_buffer(s, pos=(0, 0), size=texture.size, bufferfmt="ubyte", colorfmt="bgr")
     return texture
 
-def on_enter(instance, value):
-    print('User pressed enter in', instance)
+def CreateDisplayImage(dicom, label):
+    img = DrawContours(label, dicom)
+    # img = MergeImages(dicom, img, 5)
+    return img
 
-
-
-def on_text(instance, value):
-    print('The widget', instance, 'have:', value)
-
-def on_focus(instance, value):
-    if value:
-        print('User focused', instance)
-    else:
-        print('User defocused', instance)
-
-
-
-'''
-# Function to merge two images horizontally separated by vertical white line of thickness "gap"
-def MergeImages(leftimage, rightimage, gap):
-    height = leftimage.shape[0]
-    width = leftimage.shape[1]
-    comp_img = np.zeros((height, (width * 2) + gap, 3))  # Height,Width,Channels
-    comp_img[:, 0:height, :] = leftimage
-    comp_img[:, height:height + gap, :] = 255
-    comp_img[:, height + gap:, :] = rightimage
-    return comp_img
-
-
-
-def SaveScanLabel(settings, acc, key, label):
-    path = os.path.join(settings['annotationPath'],str(settings['deviceID']),acc,'ScanLabel_'+acc+'.json')
-    contents = {}
-    if os.path.isfile(path):
-        with open(path,'r') as f:
-            contents = json.load(f)
-    contents[key] = label
-    with open(path,'w') as f:
-        json.dump(contents,f)
-
-def SaveSliceLabel(settings, acc, slice, key, label):
-    path = os.path.join(settings['annotationPath'],str(settings['deviceID']),acc,'SliceLabel_'+acc+'_'+str(slice)+'.json')
-    contents = {}
-    if os.path.isfile(path):
-        with open(path,'r') as f:
-            contents = json.load(f)
-    contents[key] = label
-    with open(path,'w') as f:
-        json.dump(contents,f)
-'''

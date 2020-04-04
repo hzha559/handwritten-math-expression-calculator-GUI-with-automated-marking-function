@@ -17,7 +17,7 @@ from UIEvents import f1
 from kivy.uix.textinput import TextInput
 
 
-class RadiologistGUI:
+class GUI:
     def __init__(self):
         self.root = RootWidget()
         self.root.run()
@@ -76,14 +76,7 @@ class WorkPanel(RelativeLayout):
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
         self.add_widget(btnEraseAll)
-        '''
-        textinput=TextInput(multiline=False)
-        textinput.size_hint = (None, None)
-        textinput.size = (130, 40)
-        textinput.pos = (1040, 170)
-        textinput.bind(text=self.uievents.Recognition)
-        self.add_widget(textinput)
-        '''
+        
         btnPrevSlice = Button(text="Recognition")
         btnPrevSlice.size_hint = (None, None)
         btnPrevSlice.size = (130, 40)
@@ -108,79 +101,7 @@ class WorkPanel(RelativeLayout):
         Calculate.color = (1, 1, 1, 1)
         Calculate.bind(on_release=self.uievents.Calculate)
         self.add_widget(Calculate)
-'''
-        btnNextSlice = Button(text="Next Slice (d)")
-        btnNextSlice.size_hint = (None, None)
-        btnNextSlice.size = (130, 40)
-        btnNextSlice.pos = (1180, 170)
-        btnNextSlice.color = (1, 1, 1, 1)
-        btnNextSlice.bind(on_release=self.uievents.NextSliceClick)
-        self.add_widget(btnNextSlice)
 
-        btnPrevAccession = Button(text="Prev. Access. (z)")
-        btnPrevAccession.size_hint = (None, None)
-        btnPrevAccession.size = (130, 40)
-        btnPrevAccession.pos = (1040, 110)
-        btnPrevAccession.color = (1, 1, 1, 1)
-        btnPrevAccession.bind(on_release=self.uievents.PrevAccessionClick)
-        self.add_widget(btnPrevAccession)
-
-        btnNextAccession = Button(text="Next Access. (c)")
-        btnNextAccession.size_hint = (None, None)
-        btnNextAccession.size = (130, 40)
-        btnNextAccession.pos = (1180, 110)
-        btnNextAccession.color = (1, 1, 1, 1)
-        btnNextAccession.bind(on_release=self.uievents.NextAccessionClick)
-        self.add_widget(btnNextAccession)
-
-        btnScanFungal = Button(text="Scan: Fungal")
-        btnScanFungal.size_hint = (None, None)
-        btnScanFungal.size = (110, 40)
-        btnScanFungal.pos = (1050, 30)
-        btnScanFungal.color = (1, 1, 1, 1)
-        btnScanFungal.bind(on_release=self.uievents.ScanFungalClick)
-        self.add_widget(btnScanFungal)
-
-        btnScanNormal = Button(text="Scan: Normal")
-        btnScanNormal.size_hint = (None, None)
-        btnScanNormal.size = (110, 40)
-        btnScanNormal.pos = (1050, -25)
-        btnScanNormal.color = (1, 1, 1, 1)
-        btnScanNormal.bind(on_release=self.uievents.ScanNormalClick)
-        self.add_widget(btnScanNormal)
-
-        btnSliceSpecific = Button(text="Slice: Specific")
-        btnSliceSpecific.size_hint = (None, None)
-        btnSliceSpecific.size = (110, 40)
-        btnSliceSpecific.pos = (1190, 30)
-        btnSliceSpecific.color = (1, 1, 1, 1)
-        btnSliceSpecific.bind(on_release=self.uievents.SliceSpecificClick)
-        self.add_widget(btnSliceSpecific)
-
-        btnSliceNormal = Button(text="Slice: Normal")
-        btnSliceNormal.size_hint = (None, None)
-        btnSliceNormal.size = (110, 40)
-        btnSliceNormal.pos = (1190, -25)
-        btnSliceNormal.color = (1, 1, 1, 1)
-        btnSliceNormal.bind(on_release=self.uievents.SliceNormalClick)
-        self.add_widget(btnSliceNormal)
-
-        btnAgreement = Button(text="Agreement")
-        btnAgreement.size_hint = (None, None)
-        btnAgreement.size = (100, 40)
-        btnAgreement.pos = (1210, -110)
-        btnAgreement.color = (1, 1, 1, 1)
-        btnAgreement.bind(on_release=self.uievents.AgreementClick)
-        self.add_widget(btnAgreement)
-
-        btnDebugMode = Button(text="Debug")
-        btnDebugMode.size_hint = (None, None)
-        btnDebugMode.size = (60, 30)
-        btnDebugMode.pos = (1250, -200)
-        btnDebugMode.color = (1, 1, 1, 1)
-        btnDebugMode.bind(on_release=self.uievents.DebugModeClick)
-        self.add_widget(btnDebugMode)
-'''
 
 class MainWindow(RelativeLayout):
 
@@ -242,7 +163,7 @@ class MainWindow(RelativeLayout):
         App.get_running_app().stop()
 
 
-RadiologistGUI()
+GUI()
 
 
 
