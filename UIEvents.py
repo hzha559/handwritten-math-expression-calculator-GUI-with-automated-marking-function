@@ -28,13 +28,8 @@ class UIEvents():
         self.LabelReminder = LabelReminder
         self.text=textinput
         self.model=f1()
-        self.to_window=(0,0)
-        self.y=0
-        #self.start=start
-        #self.textinput.text=textinput.text
-        # self.DatasetPath = "C:/Users/MIME Project/Dropbox/MIME/Alfred FCN/uitest/"
-        #with open('Settings.json','r') as f:
-            #self.settings = json.load(f)
+        
+        
 
 
         self.curUnlabelAccIx = 0
@@ -128,15 +123,7 @@ class UIEvents():
         #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-    '''
-    def textfield(self,event):
-        textinput = TextInput(text='Hello world', multiline=False)
-        textinput.bind(on_text_validate=on_enter)
-        textinput = TextInput()
-        textinput.bind(text=on_text)
-        textinput = TextInput()
-        textinput.bind(focus=on_focus)
-    '''
+
     def Recognition(self,event):
         self.text.text=f2(self.model)##################################
         print('recognized',self.text.text)
@@ -204,91 +191,6 @@ class UIEvents():
             self.LabelReminder.text = 'Calculated result== '+str(list[0])+'  '+str(list[1])
         elif empty==True:
             self.LabelReminder.text = ''
-    '''        
-    def PrevSliceClick(self,event):
-        self.NextFunction = "PrevSliceClick"
-        self.CheckEditsMade()
-
-    def NextSliceClick(self,event):
-        self.NextFunction = "NextSliceClick"
-        self.CheckEditsMade()
-
-    def PrevAccessionClick(self,event):
-        self.NextFunction = "PrevAccessionClick"
-        self.CheckEditsMade()
-
-    def NextAccessionClick(self,event):
-        self.NextFunction = "NextAccessionClick"
-        self.CheckEditsMade()
-
-    def ScanFungalClick(self,event):
-        fx.SaveScanLabel(self.settings,self.state['listUnlabelledAccessions'][self.curUnlabelAccIx],'fungalProb',1)
-        self.LoadContent()
-
-    def ScanNormalClick(self,event):
-        fx.SaveScanLabel(self.settings,self.state['listUnlabelledAccessions'][self.curUnlabelAccIx],'fungalProb',0)
-        self.LoadContent()
-
-    def SliceSpecificClick(self,event):
-        acc = self.state['listUnlabelledAccessions'][self.curUnlabelAccIx]
-        fx.SaveSliceLabel(self.settings,acc,self.dictAllSlices[acc][self.CurrentImgIndex],'fungalProb',1)
-        self.LoadContent()
-
-    def SliceNormalClick(self,event):
-        acc = self.state['listUnlabelledAccessions'][self.curUnlabelAccIx]
-        fx.SaveSliceLabel(self.settings,acc,self.dictAllSlices[acc][self.CurrentImgIndex],'fungalProb',0)
-        self.LoadContent()
-
-    def AgreementClick(self,event):
-        try:
-            scans, slices = EvaluationMetrics.CalculateAllMetrics(self.settings, self.dictAllSlices)
-            # iou = 'Overlap IOU = [ {:6.4f} , {:6.4f} , {:6.4f} ]'.format(pixels['IOU'][0],pixels['IOU'][1],pixels['IOU'][2])
-            scanErrors = ''
-            if sum(scans['errorCount']) > 0:
-                scanErrors = '\t Scan labels INCOMPLETE: '+str(sum(scans['errorCount']))+' errors found! '+ str(scans['errorCount'])
-            if sum(slices['errorCount']) > 0:
-                scanErrors += '\t Slice labels INCOMPLETE: '+str(sum(slices['errorCount']))+' errors found! '+ str(slices['errorCount'])
-
-            self.StatusMessage.text = 'Raters: 1 Samantha, 2 Anthony, 3 Dinesh \n'\
-                                        + 'Scan level:'+'IRA='+str(scans['IRA'][1:])+', TP='+str(scans['scanTP'][1:])+', FP='+str(scans['scanFP'][1:])+', FN='+str(scans['scanFN'][1:])+', TN='+str(scans['scanTN'][1:]) +'\n'\
-                                        + 'Slice level:'+'IRA='+str(slices['IRA'][1:])+', TP='+str(slices['sliceTP'][1:])+', FP='+str(slices['sliceFP'][1:])+', FN='+str(slices['sliceFN'][1:])+', TN='+str(slices['sliceTN'][1:]) +'\n'\
-                                        + scanErrors + '\n'\
-
-
-                                      # +'Blob FP = '+str(pixels['blobFP'][1:])+' , '\
-                                      #   +'Blob FN = '+str(pixels['blobFN'][1:])+' \n '\
-                                      #   + iou +' \n '\
-                                      #'True fungal count = '+str(pixels['blobTrue'])+' , '\
-        except Exception as e:
-            self.StatusMessage.text = 'Error calculating metrics: '+str(e)
-
-    def DebugModeClick(self,event):
-        self.DebugMode = ~self.DebugMode
-
-########################################
-
-    def FetchSlice(self,i):
-        # CurrentImgNum starts from 1
-        self.CurrentImgIndex = self.CurrentImgIndex + i
-        acc = self.state['listUnlabelledAccessions'][self.curUnlabelAccIx]
-        if self.CurrentImgIndex < 0:
-            self.CurrentImgIndex = len(self.dictAllSlices[acc])-1
-        elif self.CurrentImgIndex >= len(self.dictAllSlices[acc]):
-            self.CurrentImgIndex = 0
-
-        self.LoadContent()
-
-    def FetchAccession(self,i):
-        self.curUnlabelAccIx = self.curUnlabelAccIx + i
-        if self.curUnlabelAccIx < 0:
-            self.curUnlabelAccIx = len(self.state['listUnlabelledAccessions'])-1
-        if self.curUnlabelAccIx >= len(self.state['listUnlabelledAccessions']):
-            self.curUnlabelAccIx = 0
-
-        self.CurrentImgIndex = 0
-        self.LoadContent()
-        '''
-
 
     def LoadContent(self):
         scanLabelText = 'NO LABEL'
@@ -297,21 +199,11 @@ class UIEvents():
         self.CurrentDisplayImage = np.array(cv2.imread('cat.jpg'),np.uint8)
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
-
-
-
         text = ''
-
-
 
         self.FilePath.text = text
         a=3*4
-        '''
-        if scanLabelText == 'NO LABEL':##########################can display result here
-            self.LabelReminder.text = 'calculated result== '+str(a)
-        else:
-            self.LabelReminder.text = ''
-        '''
+        
 ########################################
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         # print('The key', keycode[1], 'have been pressed')
@@ -413,79 +305,7 @@ class UIEvents():
             self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
 
-'''
-    def CheckEditsMade(self):
-        if self.EditsMade:
-            self.FreezeKeyboard = True
-            self.SaveConfirmPopup = Popup(title='Do you want to save?',
-                          content=ConfirmDialog(self),
-                          size_hint=(None, None), size=(400, 200), auto_dismiss=False)
-            self.SaveConfirmPopup.open()
-        else:
-            self.CheckEditsMadeComplete(False)
 
-
-    def PopupDontSave(self,event):
-        self.DontSaveDrawingClick(event)
-        self.CheckEditsMadeComplete(True)
-
-    def PopupSave(self,event):
-        self.SaveDrawingClick(event)
-        self.CheckEditsMadeComplete(True)
-
-    def CheckEditsMadeComplete(self,popup):
-        if popup:
-            self.SaveConfirmPopup.dismiss()
-            self.FreezeKeyboard = False
-        if self.NextFunction == "PrevSliceClick":
-            self.FetchSlice(-1)
-        elif self.NextFunction == "NextSliceClick":
-            self.FetchSlice(1)
-        elif self.NextFunction == "PrevAccessionClick":
-            self.CurrentImgNum = 1
-            self.FetchAccession(-1)
-        elif self.NextFunction == "NextAccessionClick":
-            self.CurrentImgNum = 1
-            self.FetchAccession(1)
-
-        self.NextFunction = ""
-'''
-
-#########################################################################################################
-
-#########################################################################################################
-
-'''
-class ConfirmDialog(RelativeLayout):
-
-    def __init__(self, uievents, **kwargs):
-        super(ConfirmDialog, self).__init__(**kwargs)
-        self.uievents = uievents
-
-        label = Label(text='Edits have been made.\nDo you want to save?')
-        label.size_hint = (None, None)
-        label.size = (400, 100)
-        label.pos = (0, 50)
-
-        btnDontSave = Button(text='Don\'t Save')
-        btnDontSave.size_hint = (None, None)
-        btnDontSave.size = (170, 50)
-        btnDontSave.pos = (0, 0)
-        btnDontSave.color = (1, 1, 1, 1)
-        btnDontSave.bind(on_release=uievents.PopupDontSave)
-
-        btnSave = Button(text='Save')
-        btnSave.size_hint = (None, None)
-        btnSave.size = (170, 50)
-        btnSave.pos = (200, 0)
-        btnSave.color = (1, 1, 1, 1)
-        btnSave.bind(on_release=uievents.PopupSave)
-
-        self.add_widget(label)
-        self.add_widget(btnDontSave)
-        self.add_widget(btnSave)
-
-'''
 
 
 
