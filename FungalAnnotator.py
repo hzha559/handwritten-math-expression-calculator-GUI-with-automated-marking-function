@@ -4,7 +4,7 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Config.set('graphics','borderless',0)
 Config.set('graphics','fullscreen',0)
 Config.set('graphics', 'width', '1350')
-Config.set('graphics', 'height', '752')
+Config.set('graphics', 'height', '600')#752
 Config.set('graphics', 'resizable', 0)
 Config.write()
 from kivy.app import App
@@ -37,22 +37,18 @@ class WorkPanel(RelativeLayout):
         super(WorkPanel, self).__init__(**kwargs)
         self.uievents = uievents
 
-        Instructions = Label(font_size="14sp")
+        Instructions = Label(font_size="16sp")
         Instructions.size_hint = (None, None)
         Instructions.size = (270, 200)
-        Instructions.pos = (1045, 330)
-        Instructions.color = (1, 1, 1, 1)
-        Instructions.text = "Handwritten calculator \n" \
-                            "\n" \
-                            "First draw,then recognition, finally calculate\n" \
-                            "\n" \
-                            "Modify the recognized result in the text field\n"
+        Instructions.pos = (1045, 330-152)
+        Instructions.color = (0, 1, 0, 1)
+        Instructions.text = "Handwritten math expression calculator"
         self.add_widget(Instructions)
 
         btnDraw = Button(text="Draw")
         btnDraw.size_hint = (None, None)
         btnDraw.size = (130, 40)
-        btnDraw.pos = (1040, 320)
+        btnDraw.pos = (1040, 320-152)
         btnDraw.color = (1, 1, 1, 1)
         btnDraw.bind(on_release=self.uievents.DrawClick)
         self.add_widget(btnDraw)
@@ -60,7 +56,7 @@ class WorkPanel(RelativeLayout):
         btnErase = Button(text="Erase")
         btnErase.size_hint = (None, None)
         btnErase.size = (130, 40)
-        btnErase.pos = (1180, 320)
+        btnErase.pos = (1180, 320-152)
         btnErase.color = (1, 1, 1, 1)
         btnErase.bind(on_release=self.uievents.EraseClick)
         self.add_widget(btnErase)
@@ -68,7 +64,7 @@ class WorkPanel(RelativeLayout):
         btnSaveDrawing = Button(text="Save")
         btnSaveDrawing.size_hint = (None, None)
         btnSaveDrawing.size = (130, 40)
-        btnSaveDrawing.pos = (1040, 260)
+        btnSaveDrawing.pos = (1040, 260-152)
         btnSaveDrawing.color = (1, 1, 1, 1)
         btnSaveDrawing.bind(on_release=self.uievents.SaveDrawingClick)
         self.add_widget(btnSaveDrawing)
@@ -76,7 +72,7 @@ class WorkPanel(RelativeLayout):
         btnEraseAll = Button(text="Erase All")
         btnEraseAll.size_hint = (None, None)
         btnEraseAll.size = (130, 40)
-        btnEraseAll.pos = (1180, 260)
+        btnEraseAll.pos = (1180, 260-152)
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
         self.add_widget(btnEraseAll)
@@ -91,7 +87,7 @@ class WorkPanel(RelativeLayout):
         btnPrevSlice = Button(text="Recognition")
         btnPrevSlice.size_hint = (None, None)
         btnPrevSlice.size = (130, 40)
-        btnPrevSlice.pos = (1040, 170)
+        btnPrevSlice.pos = (1040, 170-152)
         btnPrevSlice.color = (1, 1, 1, 1)
         btnPrevSlice.bind(on_release=self.uievents.Recognition)
         self.add_widget(btnPrevSlice)
@@ -99,7 +95,7 @@ class WorkPanel(RelativeLayout):
         Close = Button(text="Close")
         Close.size_hint = (None, None)
         Close.size = (130, 40)
-        Close.pos = (1040, 110)
+        Close.pos = (1040, 110-152)
         Close.color = (1, 1, 1, 1)
         Close.bind(on_release=self.uievents.Close)
         self.add_widget(Close)
@@ -108,7 +104,7 @@ class WorkPanel(RelativeLayout):
         Calculate = Button(text="Calculate")
         Calculate.size_hint = (None, None)
         Calculate.size = (130, 40)
-        Calculate.pos = (1180, 170)
+        Calculate.pos = (1180, 170-152)
         Calculate.color = (1, 1, 1, 1)
         Calculate.bind(on_release=self.uievents.Calculate)
         self.add_widget(Calculate)
@@ -195,13 +191,13 @@ class MainWindow(RelativeLayout):
         ImageViewer.size_hint = (None, None)
         #ImageViewer.size = (1029, 512)
         ImageViewer.size = (1021, 576)
-        ImageViewer.pos = (0,240)
+        ImageViewer.pos = (0,240-152)
         self.add_widget(ImageViewer)
         
         FilePath = Label(font_size="14sp", text="", color=(1,1,1,1),halign='left',text_size=(1000,100))
         FilePath.size_hint = (None, None)
         FilePath.size = (1000, 100)
-        FilePath.pos = (20, 140)
+        FilePath.pos = (20, 140-152)
         self.add_widget(FilePath)
         
         TextReport = Label(font_size="14sp", text="", color=(1, 1, 1, 1), halign='left', text_size=(1300, 150))
@@ -209,7 +205,7 @@ class MainWindow(RelativeLayout):
         TextReport.size = (1300, 150)
         TextReport.valign = 'top'
         TextReport.text = ""
-        TextReport.pos = (20, 0)
+        TextReport.pos = (20, 0-152)
         self.add_widget(TextReport)
 
         StatusMessage = Label(font_size="14sp", text="", color=(1, 1, 1, 1), halign='left', text_size=(1300, 150))
@@ -217,21 +213,21 @@ class MainWindow(RelativeLayout):
         StatusMessage.size = (1300, 150)
         StatusMessage.valign = 'top'
         StatusMessage.text = ""
-        StatusMessage.pos = (20, -70)
+        StatusMessage.pos = (20, -70-152)
         self.add_widget(StatusMessage)
 
-        LabelReminder = Label(font_size="12sp", text="", color=(1, .3, .3, 1), halign='left', text_size=(300, 150))
+        LabelReminder = Label(font_size="15sp", text="", color=(1, .3, .3, 1), halign='left', text_size=(300, 150))
         LabelReminder.size_hint = (None, None)
         LabelReminder.size = (300, 150)
         LabelReminder.valign = 'top'
         LabelReminder.text = ""
-        LabelReminder.pos = (1050, 185)
+        LabelReminder.pos = (1050, 185-152)
         self.add_widget(LabelReminder)
         
         textinput=TextInput(multiline=False)
         textinput.size_hint = (None, None)
         textinput.size = (300, 40)#130,40
-        textinput.pos = (1040, 250)#1040,170
+        textinput.pos = (1040, 250-152)#1040,170
         #textinput.bind(text=self.uievents.Recognition)
         self.add_widget(textinput)
         

@@ -389,7 +389,7 @@ class UIEvents():
         #else:
             #c = x-(510-x)*0.10
         
-        r = 800- y+20#keep it
+        r = 800- y+20-152#keep it
         c = int(round(c))#nothing to change here
         r = int(round(r))
         return c,r
