@@ -307,8 +307,15 @@ def f1():
 
         #import torch.optim as optim
         model=resnet18(pretrained=True)
-        model.load_state_dict(torch.load('model1'))
+        fc_features = model.fc.in_features
+        #修改类别为9
+        model.fc = nn.Linear(fc_features, 16)
+        features = model.conv1.in_channels
+
+        model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)#change channels
+        model.load_state_dict(torch.load('final'))
         model=model.to(device)
+        model.eval()
         #model.eval()
         #criterion = nn.CrossEntropyLoss()
         #criterion_hinge=nn.MultiMarginLoss()
@@ -528,17 +535,14 @@ def f2(model):
                     return images
 
         transform = transforms.Compose([
-                    ratio_crop(1.0),
-                    transforms.ToPILImage(),
-                    transforms.Resize((28,28), interpolation=2),
-                    transforms.Pad(5, fill=255, padding_mode='constant'),
-                    #transforms.RandomResizedCrop(56, scale=(0.7, 1.0)),
-                    transforms.Resize((56,56), interpolation=2),
-
-                    #transforms.RandomHorizontalFlip(0.2), 
-                    transforms.ToTensor(),
-                    #transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
-            ]) 
+            ratio_crop(1.0),
+            transforms.ToPILImage(),
+            #transforms.Resize((28,28), interpolation=2),
+            #transforms.Pad(5, fill=255, padding_mode='constant'),
+            #transforms.RandomResizedCrop(56, scale=(0.7, 1.0)),
+            transforms.Resize((56,56), interpolation=2),
+            transforms.ToTensor(),
+    ]) 
             
         print('service already deployed')
         path='C:/Users/zhaoh/Downloads/FYP/UI/master/sliced one/'
@@ -553,33 +557,19 @@ def f2(model):
         #val_set = DrivingDataset(data_dir="C:/Users/zhaoh/Downloads/FYP/dataset/test/", is_train=False,transform=transform) 
         test_set = DrivingDataset(path,is_train=False, transform=transform) 
 
-        batch_size = 50
+        #batch_size = 50
         #n_workers = multiprocessing.cpu_count()
 
-        testloader = torch.utils.data.DataLoader(test_set, batch_size=50,
+        testloader = torch.utils.data.DataLoader(test_set, batch_size=11,
                                                   shuffle=False, num_workers=0)
 
 
 
-
-
-
-
-        #import torch.optim as optim
-        #model=resnet18(pretrained=True)
-        #model = torch.load('C:/Users/zhaoh/Downloads/FYP/deeplearning new/new-number-identification/model9.pkl')
-        #criterion = nn.CrossEntropyLoss()
-        #criterion_hinge=nn.MultiMarginLoss()
-        #learning_rate = 1e-4
-        #print(model)
-
-        #optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-
         for i,j in testloader:
 
-
-            i=i.reshape(-1,3,56,56)
-            outputs = model(i.to(device))
+            data = i[:,0]
+            data=data.reshape(-1,1,56,56).float().to(device)
+            outputs = model(data)
             _, predicted = torch.max(outputs.data, 1)
             print("prediction",predicted)
 
@@ -597,6 +587,8 @@ def f2(model):
                 a+='/'
             if symbol==14:
                 a+='='
+            if symbol==15:
+                a+='.'
             elif symbol<10:
                 a+=str(i.item())
         #print(a)

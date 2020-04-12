@@ -2,7 +2,6 @@ import os
 from kivy.core.window import Window
 import numpy as np
 import cv2
-import pydicom as dicom
 import json
 import Functions as fx
 from kivy.uix.label import Label
@@ -11,7 +10,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 import struct
 from kivy.uix.textinput import TextInput
-import recognize
+#import recognize
 from kivy.app import App
 #start=0
 from model import f1
@@ -77,9 +76,9 @@ class UIEvents():
         #cv2.imwrite(self.CurrentLabelPath,self.CurrentLabel, p)
         print(self.CurrentDisplayImage.shape)
         #original=cv2.imread(self.CurrentDisplayImage)
-        filename=str(np.random.randint(100000,size=1).item())
-        path='C:/Users/zhaoh/Downloads/FYP/dataset/test/'
-        cv2.imwrite(path+filename+'.jpg', self.CurrentDisplayImage)#add to training set
+        #filename=str(np.random.randint(100000,size=1).item())
+        #path='C:/Users/zhaoh/Downloads/FYP/dataset/test/'
+        #cv2.imwrite(path+filename+'.jpg', self.CurrentDisplayImage)#add to training set
         
         
         im=self.CurrentDisplayImage
@@ -290,7 +289,8 @@ class UIEvents():
         pointvector = np.array(self.CurrentDrawPointVector,np.int32)
         #cv2.fillPoly(self.CurrentLabel, [pointvector], 255)
         #polylines(img, pts, isClosed, color, thickness)
-        cv2.polylines(self.CurrentLabel, [pointvector], 0, (255,255,255))
+        #cv2.line(self.CurrentLabel, [pointvector],(255,255,255),5)
+        cv2.polylines(self.CurrentLabel, [pointvector], 0, (255,255,255),1)#0 thich
         self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
 
