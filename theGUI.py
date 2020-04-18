@@ -61,7 +61,7 @@ class WorkPanel(RelativeLayout):
         btnErase.bind(on_release=self.uievents.EraseClick)
         self.add_widget(btnErase)
 
-        btnSaveDrawing = Button(text="Save")
+        btnSaveDrawing = Button(text="Next page")
         btnSaveDrawing.size_hint = (None, None)
         btnSaveDrawing.size = (130, 40)
         btnSaveDrawing.pos = (1040, 260-152)

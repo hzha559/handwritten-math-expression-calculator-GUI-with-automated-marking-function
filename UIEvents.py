@@ -27,7 +27,8 @@ class UIEvents():
         self.LabelReminder = LabelReminder
         self.text=textinput
         self.model=f1()
-        
+        self.nextflag=0
+        self.stringindex=1
         
 
 
@@ -63,23 +64,48 @@ class UIEvents():
     def DrawClick(self,event):
         self.DrawStatus = True
         self.EraserStatus = False
-
+        self.LabelReminder.text=''
+        if self.nextflag==0:
+            self.text.text=''
+        if self.nextflag==2:
+            self.LabelReminder.text = 'Please click "Next page" first'
+            
     def EraseClick(self,event):
         self.DrawStatus = False
         self.EraserStatus = True
 
     def SaveDrawingClick(self,event):
+        self.EditsMade = True
+        
+        self.CurrentLabel =np.zeros((576,1021),np.uint8)
+        
+        self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
+        self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
+        self.nextflag=1
+        self.LabelReminder.text = 'This is page '+str(self.stringindex)
+    def DontSaveDrawingClick(self,event):
+        self.DrawStatus = False
+        self.EraserStatus = False
+        self.EditsMade = False
+    def Close(self,event):
+        #App.get_running_app().stop()
+        Window.close()
+
+    def EraseAllClick(self,event):
+        self.EditsMade = True
+        #self.CurrentLabel = self.BlankLabel.copy()
+        self.CurrentLabel =np.zeros((576,1021),np.uint8)
+        #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
+        self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
+        self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
+        self.text.text=''
+        self.nextflag=0
+        
+    def Recognition(self,event):
         self.DrawStatus = False
         self.EraserStatus = False
         self.EditsMade = False
         p = fx.SetPNGCompression(0)
-        #cv2.imwrite(self.CurrentLabelPath,self.CurrentLabel, p)
-        print(self.CurrentDisplayImage.shape)
-        #original=cv2.imread(self.CurrentDisplayImage)
-        #filename=str(np.random.randint(100000,size=1).item())
-        #path='C:/Users/zhaoh/Downloads/FYP/dataset/test/'
-        #cv2.imwrite(path+filename+'.jpg', self.CurrentDisplayImage)#add to training set
-        
         
         im=self.CurrentDisplayImage
         path='sliced one/'
@@ -106,26 +132,21 @@ class UIEvents():
         cv2.imwrite(path+'9.jpg',im9) 
         cv2.imwrite(path+'a.jpg',im10)
         cv2.imwrite(path+'b.jpg',im11)
-
-    def DontSaveDrawingClick(self,event):
-        self.DrawStatus = False
-        self.EraserStatus = False
-        self.EditsMade = False
-    def Close(self,event):
-        #App.get_running_app().stop()
-        Window.close()
-
-    def EraseAllClick(self,event):
-        self.EditsMade = True
-        #self.CurrentLabel = self.BlankLabel.copy()
-        self.CurrentLabel =np.zeros((576,1021),np.uint8)
-        #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
-        self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
-        self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-
-    def Recognition(self,event):
-        self.text.text=f2(self.model)##################################
-        print('recognized',self.text.text)
+        try:
+            if self.nextflag==1:
+                self.stringindex+=1
+                #print('index',self.stringindex)
+                self.text.text+=f2(self.model)##################################
+                print('recognized',self.text.text)
+                self.nextflag=2
+            elif self.nextflag==0:
+                self.text.text=f2(self.model)##################################
+                print('recognized',self.text.text)
+            
+        except:
+            self.LabelReminder.color=(1, .3, .3, 1)
+            self.LabelReminder.text = 'All drawings lost unexpectedly, Please draw it again'
+            
     
     def Calculate(self,event):
         list=[]
@@ -184,11 +205,18 @@ class UIEvents():
                 
                 
         if calculate==False and empty==False:
+            self.LabelReminder.color=(1, .3, .3, 1)
             self.LabelReminder.text = 'Wrong expression, please check it'
                     
         if list!= []:##########################can display result here
+            if str(list[1])=='True':
+                self.LabelReminder.color=(0, 1, 0, 1)
+            else:
+                self.LabelReminder.color=(1, .3, .3, 1)
             self.LabelReminder.text = 'Calculated result== '+str(list[0])+'  '+str(list[1])
+            
         elif empty==True:
+            self.LabelReminder.color=(1, .3, .3, 1)
             self.LabelReminder.text = ''
 
     def LoadContent(self):
