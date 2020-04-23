@@ -1,36 +1,18 @@
-def f1():
-        #__name__ == '__main__':
-        print('initialize services')
-
+def network():
+        #this function only run once, when the GUI starts
+        print('initializing services')
         import numpy as np
-        from PIL import Image
-        import pickle
-        import matplotlib.pyplot as plt
-        #%matplotlib inline
-        import os
-        import cv2
-        from skimage import io
         import fs
         import torchvision
         from torchvision import transforms
         import torch
-
         from torch.utils.data import Dataset, DataLoader
-        import torchvision
-
-        import multiprocessing
-        import numpy as np
-        import matplotlib.pyplot as plt
         import torch.nn as nn
         cuda = torch.cuda.is_available()
-        import time
-        device = torch.device("cuda" if cuda else "cpu")
-        
-        ###########################################
-        import torch
-        import torch.nn as nn
-        from torch.hub import load_state_dict_from_url 
+        device = torch.device("cuda" if cuda else "cpu")  # check whether cpu or gpu should be used
 
+        from torch.hub import load_state_dict_from_url 
+        ########## the following is the official implementation of Resnet#########################
 
         __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
                    'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
@@ -168,7 +150,7 @@ def f1():
                 self.groups = groups
                 self.base_width = width_per_group
                 self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
-                                       bias=False)###########################3 input channels
+                                       bias=False)
                 self.bn1 = norm_layer(self.inplanes)
                 self.relu = nn.ReLU(inplace=True)
                 self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -275,322 +257,93 @@ def f1():
             model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
             
             return model
-        #################################################################################################################
-
-        
-
-        '''
-        path='C:/Users/zhaoh/Downloads/FYP/UI/master/sliced one/'
-        for f in os.listdir(path):
-            name=os.path.join(path+str(f))
-            if "jpg" in name:
-                im = cv2.imread(name)
-                if im.all()!=0:
-                    os.remove(name)
-        data_dir=path
-        #train_set = DrivingDataset(data_dir="C:/Users/zhaoh/Downloads/FYP/dataset/train/", is_train=True,transform=transform) 
-        #val_set = DrivingDataset(data_dir="C:/Users/zhaoh/Downloads/FYP/dataset/test/", is_train=False,transform=transform) 
-        test_set = DrivingDataset(path,is_train=False, transform=transform) 
-
-        batch_size = 50
-        #n_workers = multiprocessing.cpu_count()
-
-        testloader = torch.utils.data.DataLoader(test_set, batch_size=50,
-                                                  shuffle=False, num_workers=0)
-        '''
-
-
-
-
-
-
-
-        #import torch.optim as optim
+        ############################end of the Resnet################################################################
+ 
         model=resnet18(pretrained=True)
         fc_features = model.fc.in_features
-        #修改类别为9
-        model.fc = nn.Linear(fc_features, 16)
+        model.fc = nn.Linear(fc_features, 16)#change the output classes of the model to 16
         features = model.conv1.in_channels
 
-        model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)#change channels
-        model.load_state_dict(torch.load('final'))
+        model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
+        model.load_state_dict(torch.load('final'))  #load the pre-trained model
         model=model.to(device)
         model.eval()
-        #model.eval()
-        #criterion = nn.CrossEntropyLoss()
-        #criterion_hinge=nn.MultiMarginLoss()
-        #learning_rate = 1e-4
-        #print(model)
-
-        #optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-        '''
-        for i,j in testloader:
-
-
-            i=i.reshape(-1,3,56,56)
-            outputs = model(i.to(device))
-            _, predicted = torch.max(outputs.data, 1)
-            print("prediction",predicted)
-
-        a=''
-        for i in predicted:
-            symbol=i.item()
-            print(symbol)
-            if symbol==10:
-                a+='+'
-            if symbol==11:
-                a+='-'
-            if symbol==12:
-                a+='*'
-            if symbol==13:
-                a+='/'
-            if symbol==14:
-                a+='='
-            elif symbol<10:
-                a+=str(i.item())
-        #print(a)
-        #self.start=1
-        '''
+        
+        
         print('model is ready')
-        return(model)
-    
-    
-    
-def f2(model):
-        import numpy as np
-        from PIL import Image
-        import pickle
-        import matplotlib.pyplot as plt
-        #%matplotlib inline
-        import os
-        import cv2
-        from skimage import io
-        import fs
-        import torchvision
-        from torchvision import transforms
-        import torch
-
-        from torch.utils.data import Dataset, DataLoader
-        import torchvision
-
-        import multiprocessing
-        import numpy as np
-        import matplotlib.pyplot as plt
-        import torch.nn as nn
-        cuda = torch.cuda.is_available()
-        import time
-        device = torch.device("cuda" if cuda else "cpu")
-        print(device)
-        class DrivingDataset(Dataset):
-            def __init__(self,data_dir, input_w=224, input_h=224,is_train=True,transform=None):
-                if is_train==False:
-                    threshold=51#use 50 from each class as validation
-                else:
-                    threshold=300#300 as training
-                namelist = [[] for i in range(15)]
-
-                self.data_filenames = []
-                self.data_ids = []
-                self.is_train=is_train
-
-                self.data_root=fs.open_fs(data_dir)
-                self.transform = transform
-                for p in self.data_root.walk.files(filter=["*.jpg","*.png"]):
-                    filename=data_dir+p
-                    if is_train==True:#temporary bug
-                        if "zero"  in filename:
-                            if len(namelist[0])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(0)
-                                namelist[0].append(1)
-                        elif "one" in filename:
-                            if len(namelist[1])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(1)
-                                namelist[1].append(1)
-                        elif "two" in filename:
-                            if len(namelist[2])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(2)
-                                namelist[2].append(1)
-                        elif "three" in filename:
-                            if len(namelist[3])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(3)
-                                namelist[3].append(1)
-                        elif "four" in filename:
-                            if len(namelist[4])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(4)
-                                namelist[4].append(1)
-                        elif "five" in filename:
-                            if len(namelist[5])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(5)
-                                namelist[5].append(1)
-                        elif "six" in filename:
-                            if len(namelist[6])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(6)
-                                namelist[6].append(1)
-                        elif "seven" in filename:
-                            if len(namelist[7])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(7)
-                                namelist[7].append(1)
-                        elif "eight" in filename:
-                            if len(namelist[8])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(8)
-                                namelist[8].append(1)
-                        elif "nine" in filename:
-                            if len(namelist[9])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(9)
-                                namelist[9].append(1)
-                        elif "plus" in filename:
-                            if len(namelist[10])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(10)
-                                namelist[10].append(1)
-                        elif "minus" in filename:
-                            if len(namelist[11])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(11)
-                                namelist[11].append(1)
-
-                        elif "times" in filename:
-                            if len(namelist[12])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(12)
-                                namelist[12].append(1)
-                        elif "div" in filename:
-                            if len(namelist[13])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(13)
-                                namelist[13].append(1)
-                        elif "equal" in filename:
-                            if len(namelist[14])<threshold:
-                                self.data_filenames.append(filename)
-                                self.data_ids.append(14)
-                                namelist[14].append(1)
-                    else:
-                        self.data_filenames.append(filename)
-                        print(filename)
-                        self.data_ids.append(0)
-
-
-                # print(self.data_filenames)
-                #print(self.data_ids)
-                print(len(self.data_ids))
-
-                #self.input_w = input_w
-                #self.input_h = input_h
-
-            def __getitem__(self, item):
-                """Grey(i, j) = 0.299 × R(i, j) + 0.587 × G(i, j) + 0.114 × B(i, j)"""
-
-                img_path = self.data_filenames[item]
-                #print(img_path)
-                target = self.data_ids[item]
-
-                image = cv2.imread(img_path)
-
-                if self.transform:
-                    image = self.transform(image)
-
-                target = np.array([target], dtype=np.long)
-                target = torch.from_numpy(target)
-
-                return image,target
-
-            def __len__(self):
-                return len(self.data_filenames)
+        
+            
         class ratio_crop(object):
+            #this class will change the aspect ratio of the images to 1:1 since standard input size of the Resnet is 224x224
             def __init__(self, ratio=1.0):
                 self.ratio = ratio
             def __call__(self, images):
                     ratio=1.0
-                    #for img in images:
-                    #print(images.shape)
                     w=images.shape[1]
                     h=images.shape[0]
                     aspect_ratio=float(w)/float(h)
                     #print(images.shape,aspect_ratio)
-                    if aspect_ratio==ratio:
-                        a=1
-                    elif aspect_ratio>ratio:
-                        dif = np.abs(w  - h)
-                        pad1, pad2 = int(dif // 2), int(dif - dif // 2)
-                        pad = ((0, 0),(pad1, pad2) ,(0, 0))
-                        images = np.pad(images, pad, "constant", constant_values=255)
-                        #input_img = cv2.resize(input_x, (inputwidth, inputheight))
-                    else:
-                        # padding w
-                        dif = np.abs(h  - w)
+                    
+                    if aspect_ratio!=ratio:
+                        dif = np.abs(h  - w)  #if w<h, pad w with white pixels
                         pad1, pad2 = int(dif // 2), int(dif - dif // 2)
                         pad = ((0, 0),(pad1, pad2),(0, 0))
                         images = np.pad(images, pad, "constant", constant_values=255)
-                        #input_img = cv2.resize(input_x, (inputwidth, inputheight))
                     return images
 
         transform = transforms.Compose([
             ratio_crop(1.0),
             transforms.ToPILImage(),
-            #transforms.Resize((28,28), interpolation=2),
-            #transforms.Pad(5, fill=255, padding_mode='constant'),
-            #transforms.RandomResizedCrop(56, scale=(0.7, 1.0)),
-            transforms.Resize((56,56), interpolation=2),
+            transforms.Resize((56,56), interpolation=2),  #change the resolution of input images to 56x56
             transforms.ToTensor(),
-    ]) 
-            
-        print('service already deployed')
-        path='C:/Users/zhaoh/Downloads/FYP/UI/master/sliced one/'
-        for f in os.listdir(path):
+        ])
+        return(model,transform)
+    
+    
+    
+def recognize(model,path,transform):
+        # input: the model, path of the images collected in UI, the transform function
+        # this function will pass the images collected on the UI to the network and return the result
+        import torch
+        import cv2
+        import os
+        import numpy as np
+        cuda = torch.cuda.is_available()
+        device = torch.device("cuda" if cuda else "cpu")
+        print('loading images')
+
+        expression=''  #the result expressiom
+        for f in os.listdir(path):  #in the path where images are located
             name=os.path.join(path+str(f))
-            if "jpg" in name:
+            #print(name)
+            if "jpg" in name:  # if the file is a jpg image, open it
                 im = cv2.imread(name)
-                if im.all()!=0:
-                    os.remove(name)
-        data_dir=path
-        #train_set = DrivingDataset(data_dir="C:/Users/zhaoh/Downloads/FYP/dataset/train/", is_train=True,transform=transform) 
-        #val_set = DrivingDataset(data_dir="C:/Users/zhaoh/Downloads/FYP/dataset/test/", is_train=False,transform=transform) 
-        test_set = DrivingDataset(path,is_train=False, transform=transform) 
-
-        #batch_size = 50
-        #n_workers = multiprocessing.cpu_count()
-
-        testloader = torch.utils.data.DataLoader(test_set, batch_size=11,
-                                                  shuffle=False, num_workers=0)
-
-
-
-        for i,j in testloader:
-
-            data = i[:,0]
-            data=data.reshape(-1,1,56,56).float().to(device)
-            outputs = model(data)
-            _, predicted = torch.max(outputs.data, 1)
-            print("prediction",predicted)
-
-        a=''
-        for i in predicted:
-            symbol=i.item()
-            print(symbol)
-            if symbol==10:
-                a+='+'
-            if symbol==11:
-                a+='-'
-            if symbol==12:
-                a+='*'
-            if symbol==13:
-                a+='/'
-            if symbol==14:
-                a+='='
-            if symbol==15:
-                a+='.'
-            elif symbol<10:
-                a+=str(i.item())
-        #print(a)
-        #start=1
-        return(a)
+                if im.all()!=0:  # if no pixel is black (indicating this is an empty grid)
+                    #os.remove(name)
+                    continue
+                else:
+                    im=transform(im)
+                    #print(im.shape)
+                    im=im[0]  #take only one channel of the RGB image
+                    data=im.reshape(-1,1,56,56).float().to(device)
+                    outputs = model(data)  #the image is reshaped and sent to the network
+                    _, predicted = torch.max(outputs.data, 1)  #find the class with the highest score, which is the predicted result
+                    #print("prediction",predicted)
+                    symbol=predicted.item()  #extract the number from the tensor
+                    
+                    #print(symbol)
+                    if symbol==10:
+                        expression+='+'
+                    elif symbol==11:
+                        expression+='-'
+                    elif symbol==12:
+                        expression+='*'
+                    elif symbol==13:
+                        expression+='/'
+                    elif symbol==14:
+                        expression+='='
+                    elif symbol==15:
+                        expression+='.'
+                    else:  #if the predicted number is between 0 and 9, which doesn't need to be translated
+                        expression+=str(symbol)
+        return(expression)  #the expression in string form
