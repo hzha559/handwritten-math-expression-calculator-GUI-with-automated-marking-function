@@ -88,8 +88,10 @@ class UIEvents():
         image=[[] for i in range(11)]
         for i in range(11):
             image[i]=im[217:312,12+90*i:98+90*i]
-            cv2.imwrite(self.path+str(i+1)+'.jpg',image[i])
-
+            if i<10:
+                cv2.imwrite(self.path+str(i)+'.jpg',image[i])
+            else:
+                cv2.imwrite(self.path+'a'+'.jpg',image[i])
         try:
             if self.nextflag==1:  # if the "Next Page" is clicked, the TextField will keep the recognized result for every page
                     self.stringindex+=1
