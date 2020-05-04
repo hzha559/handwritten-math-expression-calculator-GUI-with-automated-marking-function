@@ -66,7 +66,7 @@ class WorkPanel(RelativeLayout): #the work panel that contains all the buttons
         btnSaveDrawing.size = (130, 40)
         btnSaveDrawing.pos = (1040, 260-152)
         btnSaveDrawing.color = (1, 1, 1, 1)
-        btnSaveDrawing.bind(on_release=self.uievents.SaveDrawingClick)
+        btnSaveDrawing.bind(on_release=self.uievents.NextPageClick)
         self.add_widget(btnSaveDrawing)
 
         btnEraseAll = Button(text="Erase All")

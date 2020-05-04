@@ -31,6 +31,8 @@ class UIEvents():
         self.EraserStatus = False
         self.DrawInProgress = False
         self.stringindex=0  #to deal with multiple pages
+        self.index=0
+        self.havedraw=0
         self.LoadContent()  
 
         # Accept mouse input
@@ -41,44 +43,58 @@ class UIEvents():
     def DrawClick(self,event):
         self.DrawStatus = True
         self.EraserStatus = False
-        self.LabelReminder.text=''
+        self.havedraw=0
         if self.nextflag==0:
-            self.text.text=''
+            self.LabelReminder.text=''
+        if self.nextflag==0:
+            self.text.text=self.text.text
         if self.nextflag==2:
-            self.LabelReminder.text = 'Please click "Next page" first'
+            self.nextflag=3
+        self.LabelReminder.color=(1, .3, .3, 1)
+        self.LabelReminder.text = 'Drawing on progress, Please click "Recognition" after drawing'
             
     def EraseClick(self,event):
+        self.havedraw=0
         self.DrawStatus = False
         self.EraserStatus = True
+        self.LabelReminder.color=(1, .3, .3, 1)
+        self.LabelReminder.text = 'Erasing on progress'
+        if self.nextflag==2:
+            self.nextflag=3
 
-    def SaveDrawingClick(self,event):
-        self.EditsMade = True
-        
-        self.CurrentLabel =np.zeros((576,1021),np.uint8)
-        
-        self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
-        self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-        self.nextflag=1
-        self.LabelReminder.text = 'This is page '+str(self.stringindex)
-    def DontSaveDrawingClick(self,event):
-        self.DrawStatus = False
-        self.EraserStatus = False
-        self.EditsMade = False
+    def NextPageClick(self,event):
+        self.LabelReminder.color=(1, .3, .3, 1)
+        if self.text.text!='' and self.havedraw==1:
+            self.EditsMade = True
+
+            self.CurrentLabel =np.zeros((576,1021),np.uint8)
+
+            self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
+            self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
+            self.nextflag=1
+            self.LabelReminder.text = 'This is page '+str(self.stringindex+1)
+        else:
+            self.LabelReminder.text = 'Please "Draw" and "Recognize" for the current page first'
+    
     def Close(self,event):
         #App.get_running_app().stop()
         Window.close()
 
     def EraseAllClick(self,event):
+        self.LabelReminder.color=(1, .3, .3, 1)
         self.EditsMade = True
         #self.CurrentLabel = self.BlankLabel.copy()
         self.CurrentLabel =np.zeros((576,1021),np.uint8)
         #self.CurrentDisplayImage = fx.CreateDisplayImage(self.CurrentDicom, self.CurrentLabel)#
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
-        self.text.text=''
+        self.LabelReminder.text='All drawings, including the previous pages are deleted'
         self.nextflag=0
+        self.havedraw=0
+        self.text.text=''
         
     def Recognition(self,event):
+        
         self.DrawStatus = False
         self.EraserStatus = False
         self.EditsMade = False
@@ -93,23 +109,35 @@ class UIEvents():
             else:
                 cv2.imwrite(self.path+'a'+'.jpg',image[i])
         try:
+            if recognize(self.model,self.path,self.transform)!='':
+                self.havedraw=1
+            else:
+                self.havedraw=0
             if self.nextflag==1:  # if the "Next Page" is clicked, the TextField will keep the recognized result for every page
                     self.stringindex+=1
                     #print('index',self.stringindex)
+                    self.index=len(self.text.text)
                     self.text.text+=recognize(self.model,self.path,self.transform)
                     print('recognized',self.text.text) 
                     self.nextflag=2  # ensure that repeated symbols will not be loaded if the user clicks recognition for multiple times
+                    
             elif self.nextflag==0:
                     self.text.text=recognize(self.model,self.path,self.transform)##################################
-                    print('recognized',self.text.text)  # in normal mode the TextField will be updated with the lateset handwritten expression
+                    print('recognized',self.text.text)
+                    # in normal mode the TextField will be updated with the lateset handwritten expression
+                    
+            elif self.nextflag==3:
+                    self.text.text=self.text.text[0:self.index]+recognize(self.model,self.path,self.transform)
+                    print('recognized',self.text.text)
             
         except:
+            self.havedraw=0
             self.LabelReminder.color=(1, .3, .3, 1) # this occurs very rare that saved images of math expression are lost
             self.LabelReminder.text = 'All drawings lost unexpectedly, Please draw it again'
             
     
     def Calculate(self,event):
-        list=[]
+        resultlist=[]
         string=self.text.text  # the TextField expression
         calculate=True
         empty=True
@@ -118,8 +146,9 @@ class UIEvents():
             if '=' not in string:  # if it is not an expression
                 try:
                     result=eval(string)
-                    list.append(result)
-                    list.append('') # if eval() works on the expression, it will return the result 
+                    resultlist.append(result)
+                    resultlist.append('') # if eval() works on the expression, it will return the result 
+                    
                 except:
                     calculate=False  # else do not proceed
 
@@ -131,21 +160,21 @@ class UIEvents():
                     #print(left,right)
                     if type(left)==int: # if left hand side expression generates an int result
                         if left==right:
-                            list.append(left)
-                            list.append(True) # require the right hand side expression to precisely equal to it to be regarded as correct
+                            resultlist.append(left)
+                            resultlist.append('Correct') # require the right hand side expression to precisely equal to it to be regarded as correct
                         else:
-                            list.append(left)
-                            list.append(False)
+                            resultlist.append(left)
+                            resultlist.append('Wrong')
                             
                     else:  # if left hand side expression yields a float
                         if abs(np.round(left,2)-right)<abs(left*0.005):  # require the error between the left hand side and right hand side equation to be less than 0.5% to be regarded as correct
                             #print(left)
-                            list.append(left)
-                            list.append(True)
+                            resultlist.append(left)
+                            resultlist.append('Correct')
                             #print(list)
                         else:
-                            list.append(left)
-                            list.append(False)
+                            resultlist.append(left)
+                            resultlist.append('Wrong')
                             #print(list)
 
                 except:
@@ -161,16 +190,17 @@ class UIEvents():
             self.LabelReminder.color=(1, .3, .3, 1) # warning message in red
             self.LabelReminder.text = 'Wrong expression, please check it'
                     
-        if list!= []:
-            if str(list[1])=='True':
-                self.LabelReminder.color=(0, 1, 0, 1) # if corrected, showing 'True' and the correct result in green
+        if resultlist!= []:
+            if resultlist[1]=='Wrong':
+                self.LabelReminder.color=(1, .3, .3, 1) # if corrected, showing 'True' and the correct result in green
             else:
-                self.LabelReminder.color=(1, .3, .3, 1) # if wrong, showing 'False' and the correct result in red
-            self.LabelReminder.text = 'Calculated result== '+str(list[0])+'  '+str(list[1])
+                self.LabelReminder.color=(0, 1, 0, 1) # if wrong, showing 'False' and the correct result in red
+            self.LabelReminder.text = 'The left-hand expression equals to '+str(resultlist[0])+'  '+str(resultlist[1])
             
         elif empty==True:
             self.LabelReminder.color=(1, .3, .3, 1) # if the expression is empty, show nothing
-            self.LabelReminder.text = ''
+            self.LabelReminder.text = 'Cannot calculate because nothing is recognized'
+        #self.LabelReminder.color=(1, .3, .3, 1)
 
     def LoadContent(self):
         self.CurrentDisplayImage = np.array(cv2.imread('cat.jpg'),np.uint8)

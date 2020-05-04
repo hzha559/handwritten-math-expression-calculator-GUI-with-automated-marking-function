@@ -10,18 +10,10 @@ from kivy.graphics.texture import Texture
 
 ########## RUN TIME FUNCTIONS ##########
 
-# Function to create parameters for PNG writing
-'''
-def SetPNGCompression(level):
-    png_params = list()
-    png_params.append(cv2.IMWRITE_PNG_COMPRESSION)
-    png_params.append(level)  # compression value 0 (no comp) - 9 (highest)
-    return png_params
-'''
 # Function to find and draw contours - uses opencv functions findContours() and drawContours()
 def DrawContours(net_img, dicom_img):
     img = dicom_img.copy()
-    # draw blue for human
+    # draw blue dashed lines
     ret, threshHuman = cv2.threshold(net_img, 249, 255, 0)
     
     contours, _ = cv2.findContours(threshHuman, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
