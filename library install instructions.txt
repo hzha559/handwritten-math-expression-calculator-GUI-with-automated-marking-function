@@ -1,0 +1,10 @@
+5 libraries are compulsory
+
+opencv, pytorch, torchvision, kivy, fs
+
+please install opencv using 'pip install opencv-python'
+if this fails, please 'pip install --upgrade pip' first
+
+for torchvision please use the following line as general pip install and conda install will fail
+'pip install torch===1.5.0 torchvision===0.6.0 -f https://download.pytorch.org/whl/torch_stable.html'
+this line may change according to time, please refer to https://pytorch.org/

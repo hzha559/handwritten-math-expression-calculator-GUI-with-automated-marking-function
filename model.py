@@ -8,8 +8,8 @@ def network():
         import torch
         from torch.utils.data import Dataset, DataLoader
         import torch.nn as nn
-        cuda = torch.cuda.is_available()
-        device = torch.device("cuda" if cuda else "cpu")  # check whether cpu or gpu should be used
+        #cuda = torch.cuda.is_available()
+        device = torch.device("cpu")  # check whether cpu or gpu should be used
 
         from torch.hub import load_state_dict_from_url 
         ########## the following is the official implementation of Resnet#########################
@@ -265,7 +265,7 @@ def network():
         features = model.conv1.in_channels
 
         model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
-        model.load_state_dict(torch.load('final'))  #load the pre-trained model
+        model.load_state_dict(torch.load('final',map_location=torch.device('cpu')))  #load the pre-trained model
         model=model.to(device)
         model.eval()
         
@@ -308,8 +308,8 @@ def recognize(model,path,transform):
         import cv2
         import os
         import numpy as np
-        cuda = torch.cuda.is_available()
-        device = torch.device("cuda" if cuda else "cpu")
+        #cuda = torch.cuda.is_available()
+        device = torch.device("cpu")
         print('loading images')
 
         expression=''  #the result expressiom
@@ -332,18 +332,15 @@ def recognize(model,path,transform):
                     symbol=predicted.item()  #extract the number from the tensor
                     
                     #print(symbol)
-                    if symbol==10:
-                        expression+='+'
-                    elif symbol==11:
-                        expression+='-'
-                    elif symbol==12:
-                        expression+='*'
-                    elif symbol==13:
-                        expression+='/'
-                    elif symbol==14:
-                        expression+='='
-                    elif symbol==15:
-                        expression+='.'
-                    else:  #if the predicted number is between 0 and 9, which doesn't need to be translated
-                        expression+=str(symbol)
+                    symbollist=[10,11,12,13,14,15]
+                    expressionlist=['+','-','*','/','=','.']
+                    for i in range(len(symbollist)):
+                        if symbollist[i]==symbol:
+                            expression+=expressionlist[i]
+                            break
+                        elif symbol<10:  #if the predicted number is between 0 and 9, which doesn't need to be translated
+                            expression+=str(symbol)
+                            break
+                        else:
+                            expression+=''
         return(expression)  #the expression in string form
