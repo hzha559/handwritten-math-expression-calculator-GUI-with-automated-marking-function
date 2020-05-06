@@ -9,3 +9,5 @@ It is ready-to-use (You need to install some libraries of course).
 Please refer to the install instructions.
 
 ![Screenshot](example.JPG)
+
+The dataset I used is now on https://www.kaggle.com/clarencezhao/handwritten-math-symbol-dataset
