@@ -21,7 +21,7 @@ class GUI:
     def __init__(self):
         self.root = RootWidget()
         self.root.run()
-
+# used to launch the entire GUI
 
 class RootWidget(App):
     def build(self):
@@ -31,26 +31,27 @@ class RootWidget(App):
     def on_stop(self):
         self.Main.on_stop()
 
-class WorkPanel(RelativeLayout): #the work panel that contains all the buttons
+class WorkPanel(RelativeLayout): # the work panel contains all the buttons
 
     def __init__(self,uievents, **kwargs):
         super(WorkPanel, self).__init__(**kwargs)
         self.uievents = uievents
 
-        Instructions = Label(font_size="16sp")  #the title of this program
+        Instructions = Label(font_size="16sp")  # the title of this program
         Instructions.size_hint = (None, None)
         Instructions.size = (270, 200)
         Instructions.pos = (1045, 330-152)
-        Instructions.color = (0, 1, 0, 1)  #which is green
+        Instructions.color = (0, 1, 0, 1)  # the text is written in green
         Instructions.text = "Handwritten math expression calculator"
         self.add_widget(Instructions)
 
-        btnDraw = Button(text="Draw") 
+        ########### defining buttons below ###################################################
+        btnDraw = Button(text="Draw")  # defining the drawing button
         btnDraw.size_hint = (None, None)
         btnDraw.size = (130, 40)
-        btnDraw.pos = (1040, 320-152)
-        btnDraw.color = (1, 1, 1, 1)
-        btnDraw.bind(on_release=self.uievents.DrawClick)
+        btnDraw.pos = (1040, 320-152) # define the button's location in the GUI
+        btnDraw.color = (1, 1, 1, 1) # the text color is white
+        btnDraw.bind(on_release=self.uievents.DrawClick) # bind the buttons with "DrawClick" function in UIEvent
         self.add_widget(btnDraw)
 
         btnErase = Button(text="Erase")
@@ -58,52 +59,52 @@ class WorkPanel(RelativeLayout): #the work panel that contains all the buttons
         btnErase.size = (130, 40)
         btnErase.pos = (1180, 320-152)
         btnErase.color = (1, 1, 1, 1)
-        btnErase.bind(on_release=self.uievents.EraseClick)
+        btnErase.bind(on_release=self.uievents.EraseClick) # bind the buttons with "EraseClick" function in UIEvent
         self.add_widget(btnErase)
 
-        btnSaveDrawing = Button(text="Next Page")
-        btnSaveDrawing.size_hint = (None, None)
-        btnSaveDrawing.size = (130, 40)
-        btnSaveDrawing.pos = (1040, 260-152)
-        btnSaveDrawing.color = (1, 1, 1, 1)
-        btnSaveDrawing.bind(on_release=self.uievents.NextPageClick)
-        self.add_widget(btnSaveDrawing)
+        btnNextPage = Button(text="Next Page")
+        btnNextPage.size_hint = (None, None)
+        btnNextPage.size = (130, 40)
+        btnNextPage.pos = (1040, 260-152)
+        btnNextPage.color = (1, 1, 1, 1)
+        btnNextPage.bind(on_release=self.uievents.NextPageClick) # bind the buttons with "NextPageClick" function in UIEvent
+        self.add_widget(btnNextPage)
 
         btnEraseAll = Button(text="Erase All")
         btnEraseAll.size_hint = (None, None)
         btnEraseAll.size = (130, 40)
         btnEraseAll.pos = (1180, 260-152)
         btnEraseAll.color = (1, 1, 1, 1)
-        btnEraseAll.bind(on_release=self.uievents.EraseAllClick)
+        btnEraseAll.bind(on_release=self.uievents.EraseAllClick) # bind the buttons with "EraseAllClick" function in UIEvent
         self.add_widget(btnEraseAll)
         
-        btnPrevSlice = Button(text="Recognition")
-        btnPrevSlice.size_hint = (None, None)
-        btnPrevSlice.size = (130, 40)
-        btnPrevSlice.pos = (1040, 170-152)
-        btnPrevSlice.color = (1, 1, 1, 1)
-        btnPrevSlice.bind(on_release=self.uievents.Recognition)
-        self.add_widget(btnPrevSlice)
+        btnRecogntion = Button(text="Recognition")
+        btnRecogntion.size_hint = (None, None)
+        btnRecogntion.size = (130, 40)
+        btnRecogntion.pos = (1040, 170-152)
+        btnRecogntion.color = (1, 1, 1, 1)
+        btnRecogntion.bind(on_release=self.uievents.Recognition) # bind the buttons with "Recognition" function in UIEvent
+        self.add_widget(btnRecogntion)
         
         Close = Button(text="Close")
         Close.size_hint = (None, None)
         Close.size = (130, 40)
         Close.pos = (1040, 110-152)
         Close.color = (1, 1, 1, 1)
-        Close.bind(on_release=self.uievents.Close)
+        Close.bind(on_release=self.uievents.Close) # bind the buttons with "Close" function in UIEvent
         self.add_widget(Close)
         
-
         Calculate = Button(text="Calculate")
         Calculate.size_hint = (None, None)
         Calculate.size = (130, 40)
         Calculate.pos = (1180, 170-152)
         Calculate.color = (1, 1, 1, 1)
-        Calculate.bind(on_release=self.uievents.Calculate)
+        Calculate.bind(on_release=self.uievents.Calculate) # bind the buttons with "Calculate" function in UIEvent
         self.add_widget(Calculate)
 
 
-class MainWindow(RelativeLayout): # the main window
+class MainWindow(RelativeLayout): 
+    # the main window which contains the interactive writing window,the interactive texts and the TextField
 
     def __init__(self,**kwargs):
         super(MainWindow, self).__init__(**kwargs)
@@ -114,29 +115,7 @@ class MainWindow(RelativeLayout): # the main window
         ImageViewer.pos = (0,240-152)
         self.add_widget(ImageViewer)
         
-        ################################# all of the following are buttons that each corresponds to the definition in class Workpanel
-        FilePath = Label(font_size="14sp", text="", color=(1,1,1,1),halign='left',text_size=(1000,100))
-        FilePath.size_hint = (None, None) # by default, these texts are black
-        FilePath.size = (1000, 100)
-        FilePath.pos = (20, 140-152)
-        self.add_widget(FilePath)
-        
-        TextReport = Label(font_size="14sp", text="", color=(1, 1, 1, 1), halign='left', text_size=(1300, 150))
-        TextReport.size_hint = (None, None)
-        TextReport.size = (1300, 150)
-        TextReport.valign = 'top'
-        TextReport.text = ""
-        TextReport.pos = (20, 0-152)
-        self.add_widget(TextReport)
-
-        StatusMessage = Label(font_size="14sp", text="", color=(1, 1, 1, 1), halign='left', text_size=(1300, 150))
-        StatusMessage.size_hint = (None, None)
-        StatusMessage.size = (1300, 150)
-        StatusMessage.valign = 'top'
-        StatusMessage.text = ""
-        StatusMessage.pos = (20, -70-152)
-        self.add_widget(StatusMessage)
-        ##########################################
+        # The reason to put the interactive texts and the TextField in the MainWindow is that MainWindow can change according to time
         
         LabelReminder = Label(font_size="15sp", text="", color=(1, .3, .3, 1), halign='left', text_size=(300, 150))
         LabelReminder.size_hint = (None, None)  # the interactive text, which is initially set to red
@@ -151,7 +130,6 @@ class MainWindow(RelativeLayout): # the main window
         textinput.size = (300, 40)
         textinput.pos = (1040, 250-152)
         self.add_widget(textinput)
-        
         
         self.uievents = UIEvents(ImageViewer,LabelReminder,textinput)
 

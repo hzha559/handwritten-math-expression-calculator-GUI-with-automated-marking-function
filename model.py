@@ -9,7 +9,8 @@ def network():
         #cuda = torch.cuda.is_available()
         device = torch.device("cpu")  # using cpu so it will work on computers without discrete graphic cards
         from torch.hub import load_state_dict_from_url 
-########## the following block is the official implementation of Resnet#########################################
+        
+########## the following block is the PyTorch official implementation of Resnet#########################################
 
         __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
                    'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
@@ -256,35 +257,34 @@ def network():
             return model
 ############################end of the Resnet########################################################################################
  
-        model=resnet18(pretrained=True)
+        model=resnet18(pretrained=False) #don't need the pre-trained weights from the official
         fc_features = model.fc.in_features
         model.fc = nn.Linear(fc_features, 16) #change the output classes of the model to 16
-        #features = model.conv1.in_channels
-
-        #model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
-        model.load_state_dict(torch.load('final3channel',map_location=torch.device('cpu')))  #load the pre-trained model
+        model.load_state_dict(torch.load('final3channel',map_location=torch.device('cpu')))  #load the pre-trained weights from the file
         model=model.to(device)
         model.eval()
-        
-        
-        #print('model is ready')
-        
-            
-        class ratio_crop(object):
-            #this class will change the aspect ratio of the images to 1:1 since standard input size of the Resnet is 224x224
+  
+        class ratio_crop(object): # this function is used to pad the images from the GUI, so their aspect ratio will become 1.0
+        # since Resnet takes images that have same width and height
             def __init__(self, ratio=1.0):
                 self.ratio = ratio
             def __call__(self, images):
-                    ratio=1.0
                     w=images.shape[1]
                     h=images.shape[0]
-                    aspect_ratio=float(w)/float(h)
+                    aspect_ratio=float(w)/float(h) # the original aspect ratio
                     #print(images.shape,aspect_ratio)
-                    
-                    if aspect_ratio!=ratio:
-                        dif = np.abs(h  - w)  #if w<h, pad w with white pixels
-                        pad1, pad2 = int(dif // 2), int(dif - dif // 2)
-                        pad = ((0, 0),(pad1, pad2),(0, 0))
+                    if aspect_ratio==self.ratio:
+                        a=1
+                    elif aspect_ratio<self.ratio: 
+                        dif = np.abs(h  - w) 
+                        pad1, pad2 = int(dif // 2), int(dif // 2)
+                        pad = ((0, 0),(pad1, pad2),(0, 0)) # if w<h padding width on both sides
+                        images = np.pad(images, pad, "constant", constant_values=255)
+                        #input_img = cv2.resize(input_x, (inputwidth, inputheight))
+                    else:
+                        dif = np.abs(w  - h) # if w>h padding height
+                        pad1, pad2 = int(dif // 2), int(dif // 2)
+                        pad = ((pad1, pad2),(0, 0),(0, 0))
                         images = np.pad(images, pad, "constant", constant_values=255)
                     return images
 
@@ -294,6 +294,7 @@ def network():
             transforms.Resize((56,56), interpolation=2),  #change the resolution of input images to 56x56
             transforms.ToTensor(),
         ])
+        
         return(model,transform)
     
     
@@ -315,13 +316,12 @@ def recognize(model,path,transform):
             #print(name)
             if "jpg" in name:  # if the file is a jpg image, open it
                 im = cv2.imread(name)
-                if im.all()!=0:  # if no pixel is black (indicating this is an empty grid)
-                    #os.remove(name)
+                if im.all()!=0:  # if no pixel is black (indicating this is an empty grid) 
+                    #os.remove(name) # go to the next image
                     continue
                 else:
                     im=transform(im)
                     #print(im.shape)
-                    #im=im[0]  #take only one channel of the RGB image
                     data=im.reshape(-1,3,56,56).float().to(device)
                     outputs = model(data)  #the image is reshaped and sent to the network
                     _, predicted = torch.max(outputs.data, 1)  #find the class with the highest score, which is the predicted result
