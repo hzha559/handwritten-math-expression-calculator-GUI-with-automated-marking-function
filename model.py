@@ -259,10 +259,10 @@ def network():
         model=resnet18(pretrained=True)
         fc_features = model.fc.in_features
         model.fc = nn.Linear(fc_features, 16) #change the output classes of the model to 16
-        features = model.conv1.in_channels
+        #features = model.conv1.in_channels
 
-        model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
-        model.load_state_dict(torch.load('final',map_location=torch.device('cpu')))  #load the pre-trained model
+        #model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
+        model.load_state_dict(torch.load('final3channel',map_location=torch.device('cpu')))  #load the pre-trained model
         model=model.to(device)
         model.eval()
         
@@ -321,8 +321,8 @@ def recognize(model,path,transform):
                 else:
                     im=transform(im)
                     #print(im.shape)
-                    im=im[0]  #take only one channel of the RGB image
-                    data=im.reshape(-1,1,56,56).float().to(device)
+                    #im=im[0]  #take only one channel of the RGB image
+                    data=im.reshape(-1,3,56,56).float().to(device)
                     outputs = model(data)  #the image is reshaped and sent to the network
                     _, predicted = torch.max(outputs.data, 1)  #find the class with the highest score, which is the predicted result
                     #print("prediction",predicted)
