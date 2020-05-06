@@ -2,17 +2,14 @@ def network():
         #this function only run once, when the GUI starts
         print('initializing services')
         import numpy as np
-        import fs
         import torchvision
         from torchvision import transforms
         import torch
-        from torch.utils.data import Dataset, DataLoader
         import torch.nn as nn
         #cuda = torch.cuda.is_available()
-        device = torch.device("cpu")  # check whether cpu or gpu should be used
-
+        device = torch.device("cpu")  # using cpu so it will work on computers without discrete graphic cards
         from torch.hub import load_state_dict_from_url 
-        ########## the following is the official implementation of Resnet#########################
+########## the following block is the official implementation of Resnet#########################################
 
         __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
                    'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
@@ -257,11 +254,11 @@ def network():
             model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
             
             return model
-        ############################end of the Resnet################################################################
+############################end of the Resnet########################################################################################
  
         model=resnet18(pretrained=True)
         fc_features = model.fc.in_features
-        model.fc = nn.Linear(fc_features, 16)#change the output classes of the model to 16
+        model.fc = nn.Linear(fc_features, 16) #change the output classes of the model to 16
         features = model.conv1.in_channels
 
         model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)  #change the input channel of the model to 1
@@ -270,7 +267,7 @@ def network():
         model.eval()
         
         
-        print('model is ready')
+        #print('model is ready')
         
             
         class ratio_crop(object):
@@ -310,7 +307,7 @@ def recognize(model,path,transform):
         import numpy as np
         #cuda = torch.cuda.is_available()
         device = torch.device("cpu")
-        print('loading images')
+        #print('loading images')
 
         expression=''  #the result expressiom
         for f in os.listdir(path):  #in the path where images are located
@@ -334,7 +331,7 @@ def recognize(model,path,transform):
                     #print(symbol)
                     symbollist=[10,11,12,13,14,15]
                     expressionlist=['+','-','*','/','=','.']
-                    for i in range(len(symbollist)):
+                    for i in range(len(symbollist)):#if the predicted number is between 10 and 15,translated to corresponding operators
                         if symbollist[i]==symbol:
                             expression+=expressionlist[i]
                             break

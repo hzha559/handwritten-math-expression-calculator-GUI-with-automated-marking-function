@@ -1,26 +1,17 @@
-import os
 from kivy.core.window import Window
 import numpy as np
 import cv2
-import json
 import Functions as fx
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
-from kivy.app import App
 from model import network
-from model import recognize
+from model import recognize #import the neural network in another .py file
  
 class UIEvents():
     #define all the functions of the GUI
     def __init__(self,ImageViewer,LabelReminder,textinput):
         self.ImageViewer = ImageViewer
-         
-        self.LabelReminder = LabelReminder  #interactive text
-        self.text=textinput  #the text field
-        self.model,self.transform=network()
+        self.LabelReminder = LabelReminder  #the interactive texts
+        self.text=textinput  #the TextField
+        self.model,self.transform=network() #loading the network and image transform tehniques
         self.nextflag=0  #record if the "Next Page" button is pressed
         self.path='sliced one/'  #the location to store the handwriting
         self.CurrentDrawPointVector = []  #the position of each stroke
@@ -32,7 +23,7 @@ class UIEvents():
         self.DrawInProgress = False
         self.stringindex=0  #to deal with multiple pages
         self.index=0
-        self.havedraw=0
+        self.havedraw=0 #
         self.LoadContent()  
 
         # Accept mouse input
@@ -43,11 +34,10 @@ class UIEvents():
     def DrawClick(self,event):
         self.DrawStatus = True
         self.EraserStatus = False
-        self.havedraw=0
+        self.havedraw=0 #indicating haven't make any drawing
         if self.nextflag==0:
             self.LabelReminder.text=''
-        if self.nextflag==0:
-            self.text.text=self.text.text
+            self.text.text=self.text.text # not in "Next Page" mode, 
         if self.nextflag==2:
             self.nextflag=3
         self.LabelReminder.color=(1, .3, .3, 1)
@@ -77,7 +67,7 @@ class UIEvents():
             self.LabelReminder.text = 'Please "Draw" and "Recognize" for the current page first'
     
     def Close(self,event):
-        #App.get_running_app().stop()
+        App.get_running_app().stop()
         Window.close()
 
     def EraseAllClick(self,event):
