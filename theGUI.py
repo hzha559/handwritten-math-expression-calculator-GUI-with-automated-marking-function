@@ -97,7 +97,7 @@ class WorkPanel(RelativeLayout): # the work panel contains all the buttons
         Calculate = Button(text="Calculate")
         Calculate.size_hint = (None, None)
         Calculate.size = (130, 40)
-        Calculate.pos = (1180, 170-152)
+        Calculate.pos = (1040, 260-152)
         Calculate.color = (1, 1, 1, 1)
         Calculate.bind(on_release=self.uievents.Calculate) # bind the buttons with "Calculate" function in UIEvent
         self.add_widget(Calculate)
@@ -122,7 +122,7 @@ class MainWindow(RelativeLayout):
         LabelReminder.size = (300, 150)
         LabelReminder.valign = 'top'
         LabelReminder.text = ""
-        LabelReminder.pos = (1050, 185-152)
+        LabelReminder.pos = (1050, 210-152)
         self.add_widget(LabelReminder)
         
         textinput=TextInput(multiline=False)  #the TextField

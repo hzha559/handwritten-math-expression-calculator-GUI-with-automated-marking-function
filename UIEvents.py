@@ -86,11 +86,12 @@ class UIEvents():
         self.CurrentLabel =np.zeros((576,1021),np.uint8)
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # refresh the GUI
-        self.LabelReminder.text='All drawings, including the previous pages are deleted'
+        self.LabelReminder.text='All drawings, including those on the previous pages are deleted'
         #self.nextflag=0
         self.havedraw=0
         self.text.text='' # clear the TextField
         self.previous=''
+        
     def Recognition(self,event):
         # call the neural network and perform recogniton 
         # return the recognized results to the TextField
@@ -115,11 +116,11 @@ class UIEvents():
                 self.index=len(self.text.text)
             else:
             '''
-            if event!='':
+            if event=='w' or event=='e':
                 self.text.text=self.previous+recognize(self.model,self.path,self.transform,11)#self.text.text[0:self.index]+
                 print('recognized',self.text.text) 
                 self.index=len(self.text.text)
-            else:
+            elif event=='11':
                 self.previous+=recognize(self.model,self.path,self.transform,3)
                 print('recognized',self.text.text) 
      
@@ -161,6 +162,7 @@ class UIEvents():
         # display the result in the interactive texts
         resultlist=[]
         string=self.text.text  # the TextField expression
+        print(string)
         calculate=True
         empty=True
         
@@ -266,11 +268,12 @@ class UIEvents():
         
         if self.DrawInProgress and self.DrawStatus: # to be ready for another stroke
             del self.CurrentDrawPointVector[:]
-
-            self.Recognition(event='w')
+            #cause textfiled to change
+            if self.mouse_x<1000:
+                self.Recognition(event='w')
             if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0:
                 #self.nextflag=1
-                self.Recognition(event='')
+                self.Recognition(event='11')
                 self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
                 #print(self.CurrentLabel.shape)
                 self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,self.CurrentLabel)
