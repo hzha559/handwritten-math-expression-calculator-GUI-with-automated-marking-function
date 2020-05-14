@@ -37,12 +37,14 @@ class UIEvents():
         # this function is to used to draw a stroke by allowing comditions for the "on-touch-up" below
         self.DrawStatus = True
         self.EraserStatus = False
-        self.havedraw=0 #indicating haven't make any drawing
+        #self.havedraw=0 #indicating haven't make any drawing
+        '''
         if self.nextflag==0: # not in "next gage" mode, 
             #self.LabelReminder.text='' 
             self.text.text=self.text.text # the TextField will be kept if the user clicks recogntion again
         if self.nextflag==2: # in "next page" mode
             self.nextflag=3 # prevent repeated recognitions by changing the state
+            '''
         self.LabelReminder.color=(1, .3, .3, 1)
         self.LabelReminder.text = 'Drawing on progress, Please click "Recognition" after drawing' # display in the interactive text in red
             
@@ -53,9 +55,10 @@ class UIEvents():
         self.EraserStatus = True
         self.LabelReminder.color=(1, .3, .3, 1)
         self.LabelReminder.text = 'Erasing on progress' # display in the interactive text in red
+        '''
         if self.nextflag==2:
             self.nextflag=3 # prevent repeated recognitions by changing the state
-
+        '''
     def NextPageClick(self,event):
         # this function is used to create another page for writing
         self.LabelReminder.color=(1, .3, .3, 1)
@@ -100,18 +103,23 @@ class UIEvents():
             else:
                 cv2.imwrite(self.path+'a'+'.jpg',image[i])
         # save individual symbols as 11 images 
-        
+        print(self.nextflag)
         try:
-            if recognize(self.model,self.path,self.transform)!='':
-                self.havedraw=1 # if recognized results are not empty,it means the user has drawn something
-            else:
-                self.havedraw=0
-            
+            if self.nextflag==1:
+                self.nextflag=2
+                self.text.text+=recognize(self.model,self.path,self.transform,3)
+                print('recognized',self.text.text) 
+            elif self.nextflag==0:
+                self.text.text+=recognize(self.model,self.path,self.transform,11)
+                print('recognized',self.text.text) 
+     
+            '''
             if self.nextflag==0:
                     # in normal mode the TextField will be updated with the lateset handwritten expression
                     self.text.text=recognize(self.model,self.path,self.transform)
                     print('recognized',self.text.text)
-            elif self.nextflag==1:  
+                    
+            if self.nextflag<3:  
                     # if the "Next Page" is clicked, the TextField will keep the recognized result for every page
                     # add the newly recognized results to previous results
                     self.pageindex+=1
@@ -119,12 +127,12 @@ class UIEvents():
                     self.index=len(self.text.text)
                     self.text.text+=recognize(self.model,self.path,self.transform)
                     print('recognized',self.text.text) 
-                    self.nextflag=2  # ensure that repeated symbols will not be loaded if the user clicks recognition for multiple times
+                    #self.nextflag=2  # ensure that repeated symbols will not be loaded if the user clicks recognition for multiple times
             elif self.nextflag==3:
                     # in this case the newly recognized results will replace the old ones
                     self.text.text=self.text.text[0:self.index]+recognize(self.model,self.path,self.transform)
                     print('recognized',self.text.text) # this will occur when the user modified some symbols on the current page
-                    
+            '''        
         except: # this occurs very rare that saved images of math expression are lost
             self.havedraw=0
             self.LabelReminder.color=(1, .3, .3, 1) 
@@ -240,6 +248,15 @@ class UIEvents():
         
         if self.DrawInProgress and self.DrawStatus: # to be ready for another stroke
             del self.CurrentDrawPointVector[:]
+            if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0:
+                self.nextflag=1
+                self.Recognition(event='')
+                self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
+                #print(self.CurrentLabel.shape)
+                self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,self.CurrentLabel)
+                self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) 
+                self.DrawStatus = True
+                self.EraserStatus = False
         
         self.DrawInProgress = False
 

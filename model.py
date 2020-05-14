@@ -299,7 +299,7 @@ def network():
     
     
     
-def recognize(model,path,transform):
+def recognize(model,path,transform,length):
         # input: the model, path of the images collected in UI, the transform function
         # this function will pass the images collected on the UI to the network and return the result
         import torch
@@ -311,33 +311,36 @@ def recognize(model,path,transform):
         #print('loading images')
 
         expression=''  #the result expressiom
+        
         for f in os.listdir(path):  #in the path where images are located
-            name=os.path.join(path+str(f))
-            #print(name)
-            if "jpg" in name:  # if the file is a jpg image, open it
-                im = cv2.imread(name)
-                if im.all()!=0:  # if no pixel is black (indicating this is an empty grid) 
-                    #os.remove(name) # go to the next image
-                    continue
-                else:
-                    im=transform(im)
-                    #print(im.shape)
-                    data=im.reshape(-1,3,56,56).float().to(device)
-                    outputs = model(data)  #the image is reshaped and sent to the network
-                    _, predicted = torch.max(outputs.data, 1)  #find the class with the highest score, which is the predicted result
-                    #print("prediction",predicted)
-                    symbol=predicted.item()  #extract the number from the tensor
-                    
-                    #print(symbol)
-                    symbollist=[10,11,12,13,14,15]
-                    expressionlist=['+','-','*','/','=','.']
-                    for i in range(len(symbollist)):#if the predicted number is between 10 and 15,translated to corresponding operators
-                        if symbollist[i]==symbol:
-                            expression+=expressionlist[i]
-                            break
-                        elif symbol<10:  #if the predicted number is between 0 and 9, which doesn't need to be translated
-                            expression+=str(symbol)
-                            break
+                name=os.path.join(path+str(f))
+                if "jpg" in name:  # if the file is a jpg image, open it
+                    im = cv2.imread(name)
+                    #print(str(f))
+                    if str(f) in ['0.jpg','1.jpg','2.jpg'] or length==11:
+                        if im.all()!=0:  # if no pixel is black (indicating this is an empty grid) 
+                            #os.remove(name) # go to the next image
+                            continue
                         else:
-                            expression+=''
+                            im=transform(im)
+                            #print(im.shape)
+                            data=im.reshape(-1,3,56,56).float().to(device)
+                            outputs = model(data)  #the image is reshaped and sent to the network
+                            _, predicted = torch.max(outputs.data, 1)  #find the class with the highest score, which is the predicted result
+                            #print("prediction",predicted)
+                            symbol=predicted.item()  #extract the number from the tensor
+
+                            #print(symbol)
+                            symbollist=[10,11,12,13,14,15]
+                            expressionlist=['+','-','*','/','=','.']
+                            for i in range(len(symbollist)):#if the predicted number is between 10 and 15,translated to corresponding operators
+                                if symbollist[i]==symbol:
+                                    expression+=expressionlist[i]
+                                    break
+                                elif symbol<10:  #if the predicted number is between 0 and 9, which doesn't need to be translated
+                                    expression+=str(symbol)
+                                    break
+                                else:
+                                    expression+=''
+                
         return(expression)  #the expression in string form
