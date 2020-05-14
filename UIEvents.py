@@ -26,6 +26,7 @@ class UIEvents():
         self.index=0 #store the position index of the recognized result in the TextField
         self.havedraw=0 #determine whether the user has modified the drawing
         self.LoadContent()  
+        self.previous=''
 
         # Accept mouse input
         Window.bind(on_touch_move=self.on_touch_move)
@@ -55,6 +56,7 @@ class UIEvents():
         self.EraserStatus = True
         self.LabelReminder.color=(1, .3, .3, 1)
         self.LabelReminder.text = 'Erasing on progress' # display in the interactive text in red
+        
         '''
         if self.nextflag==2:
             self.nextflag=3 # prevent repeated recognitions by changing the state
@@ -68,7 +70,7 @@ class UIEvents():
             self.CurrentLabel =np.zeros((576,1021),np.uint8) 
             self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
             self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # display a new blank drawing page
-            self.nextflag=1
+            #self.nextflag=1
             self.LabelReminder.text = 'This is page '+str(self.pageindex+1)
         else:
             self.LabelReminder.text = 'Please "Draw" and "Recognize" for the current page first' # don't provide a new page
@@ -85,10 +87,10 @@ class UIEvents():
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # refresh the GUI
         self.LabelReminder.text='All drawings, including the previous pages are deleted'
-        self.nextflag=0
+        #self.nextflag=0
         self.havedraw=0
         self.text.text='' # clear the TextField
-        
+        self.previous=''
     def Recognition(self,event):
         # call the neural network and perform recogniton 
         # return the recognized results to the TextField
@@ -96,6 +98,7 @@ class UIEvents():
         self.EraserStatus = False      
         im=self.CurrentDisplayImage
         image=[[] for i in range(11)]
+        
         for i in range(11):
             image[i]=im[217:312,12+90*i:98+90*i]
             if i<10:
@@ -103,14 +106,21 @@ class UIEvents():
             else:
                 cv2.imwrite(self.path+'a'+'.jpg',image[i])
         # save individual symbols as 11 images 
-        print(self.nextflag)
+        #print(self.nextflag)
         try:
-            if self.nextflag==1:
-                self.nextflag=2
+            '''
+            if event=='':######### 3 removed case
                 self.text.text+=recognize(self.model,self.path,self.transform,3)
                 print('recognized',self.text.text) 
-            elif self.nextflag==0:
-                self.text.text+=recognize(self.model,self.path,self.transform,11)
+                self.index=len(self.text.text)
+            else:
+            '''
+            if event!='':
+                self.text.text=self.previous+recognize(self.model,self.path,self.transform,11)#self.text.text[0:self.index]+
+                print('recognized',self.text.text) 
+                self.index=len(self.text.text)
+            else:
+                self.previous+=recognize(self.model,self.path,self.transform,3)
                 print('recognized',self.text.text) 
      
             '''
@@ -132,11 +142,18 @@ class UIEvents():
                     # in this case the newly recognized results will replace the old ones
                     self.text.text=self.text.text[0:self.index]+recognize(self.model,self.path,self.transform)
                     print('recognized',self.text.text) # this will occur when the user modified some symbols on the current page
-            '''        
+            ''' 
+        
         except: # this occurs very rare that saved images of math expression are lost
             self.havedraw=0
             self.LabelReminder.color=(1, .3, .3, 1) 
             self.LabelReminder.text = 'All drawings lost unexpectedly, Please draw it again'
+        if event=='w':
+            self.DrawStatus = True
+            self.EraserStatus = False
+        elif event=='e':
+            self.DrawStatus = False
+            self.EraserStatus = True
             
     
     def Calculate(self,event):
@@ -241,6 +258,7 @@ class UIEvents():
             if self.DrawInProgress and self.EraserStatus:
                 self.FloodFillBlob(self.mouse_x,self.mouse_y,0)  # allow erasing if erase is clicked
                 
+                self.Recognition(event='e')
             if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0:
                 if len(self.CurrentDrawPointVector) > 0:  
                     # if more than 1 coordinates has the mouse draw, enable drawing the 8-connected lines
@@ -248,8 +266,10 @@ class UIEvents():
         
         if self.DrawInProgress and self.DrawStatus: # to be ready for another stroke
             del self.CurrentDrawPointVector[:]
+
+            self.Recognition(event='w')
             if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0:
-                self.nextflag=1
+                #self.nextflag=1
                 self.Recognition(event='')
                 self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
                 #print(self.CurrentLabel.shape)
