@@ -47,7 +47,7 @@ class UIEvents():
             self.nextflag=3 # prevent repeated recognitions by changing the state
             '''
         self.LabelReminder.color=(1, .3, .3, 1)
-        self.LabelReminder.text = 'Drawing on progress, Please click "Recognition" after drawing' # display in the interactive text in red
+        self.LabelReminder.text = 'Drawing in progress' # display in the interactive text in red
             
     def EraseClick(self,event):
         # this function is used to erase a stroke by allowing comditions for the "on-touch-up" below
@@ -55,7 +55,7 @@ class UIEvents():
         self.DrawStatus = False
         self.EraserStatus = True
         self.LabelReminder.color=(1, .3, .3, 1)
-        self.LabelReminder.text = 'Erasing on progress' # display in the interactive text in red
+        self.LabelReminder.text = 'Erasing in progress' # display in the interactive text in red
         
         '''
         if self.nextflag==2:
@@ -228,7 +228,7 @@ class UIEvents():
             self.LabelReminder.color=(1, .3, .3, 1) # if the expression is empty
             self.LabelReminder.text = 'Cannot calculate because nothing is recognized'
         else:
-            self.LabelReminder.text = 'Unknown issues occurred, please try again'
+            self.LabelReminder.text = 'Wrong expression, please check it'
 
 
     def LoadContent(self):
@@ -271,7 +271,7 @@ class UIEvents():
             #cause textfiled to change
             if self.mouse_x<1000:
                 self.Recognition(event='w')
-            if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0:
+            if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0 and self.mouse_y>217 and self.mouse_y< 312:
                 #self.nextflag=1
                 self.Recognition(event='11')
                 self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
