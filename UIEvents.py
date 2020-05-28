@@ -276,13 +276,15 @@ class UIEvents():
                 self.Recognition(event='w')
             if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0 and self.mouse_y>217 and self.mouse_y< 312:
                 #self.nextflag=1
+                self.DrawStatus = False
                 self.Recognition(event='11')
                 self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
                 #print(self.CurrentLabel.shape)
                 self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,self.CurrentLabel)
                 self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) 
-                self.DrawStatus = True
+                self.DrawStatus = False
                 self.EraserStatus = False
+                self.DrawStatus = True
         
         self.DrawInProgress = False
 
