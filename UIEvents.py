@@ -118,11 +118,11 @@ class UIEvents():
             '''
             if event=='w' or event=='e':
                 self.text.text=self.previous+recognize(self.model,self.path,self.transform,11)#self.text.text[0:self.index]+
-                print('recognized',self.text.text) 
+                #print('recognized',self.text.text) 
                 self.index=len(self.text.text)
             elif event=='11':
                 self.previous+=recognize(self.model,self.path,self.transform,3)
-                print('recognized',self.text.text) 
+                #print('recognized',self.text.text) 
      
             '''
             if self.nextflag==0:
@@ -171,6 +171,7 @@ class UIEvents():
             if '=' not in string:  # if it is not an equation
                 try:
                     result=eval(string)
+                    result=np.round(result,3)
                     resultlist.append(result)
                     resultlist.append('') # if eval() works on the expression, it will return the result 
                     
@@ -196,10 +197,12 @@ class UIEvents():
                         if abs(np.round(left,2)-right)<abs(left*0.005):  
                         # require the error between the left hand side and right hand side equation to be less than 0.5% to be regarded as correct
                             #print(left)
+                            left=np.round(left,3)
                             resultlist.append(left)
                             resultlist.append('Correct')
                             #print(list)
                         else:
+                            left=np.round(left,3)
                             resultlist.append(left)
                             resultlist.append('Wrong')
                             #print(list)
