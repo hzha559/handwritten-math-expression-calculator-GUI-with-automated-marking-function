@@ -265,9 +265,10 @@ class UIEvents():
                 
                 self.Recognition(event='e')
             if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0:
-                if len(self.CurrentDrawPointVector) > 0:  
-                    # if more than 1 coordinates has the mouse draw, enable drawing the 8-connected lines
-                    self.DrawFilledPolygon()
+                 
+                 # if more than 1 coordinates has the mouse draw, enable drawing the 8-connected lines
+                 self.DrawFilledPolygon()
+            del self.CurrentDrawPointVector[:]
         
         if self.DrawInProgress and self.DrawStatus: # to be ready for another stroke
             del self.CurrentDrawPointVector[:]
@@ -282,9 +283,9 @@ class UIEvents():
                 #print(self.CurrentLabel.shape)
                 self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,self.CurrentLabel)
                 self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) 
-                self.DrawStatus = False
+                #self.DrawStatus = False
                 self.EraserStatus = False
-                self.DrawStatus = True
+                #self.DrawStatus = True
         
         self.DrawInProgress = False
 
