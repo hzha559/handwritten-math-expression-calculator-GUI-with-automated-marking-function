@@ -13,7 +13,7 @@ class UIEvents():
         self.LabelReminder = LabelReminder  
         self.text=textinput  
         self.model,self.transform=network() #loading the network and image transform tehniques from model.py
-        self.nextflag=0  #record if the "Next Page" button is pressed
+        #self.nextflag=0  #record if the "Next Page" button is pressed
         self.path='sliced one/'  #the location to store the handwriting
         self.CurrentDrawPointVector = []  #the position of each stroke
         self.BlankLabel = np.zeros((576,1021),np.uint8)    
@@ -22,9 +22,9 @@ class UIEvents():
         self.DrawStatus = False
         self.EraserStatus = False
         self.DrawInProgress = False
-        self.pageindex=0  #page number, to deal with multiple pages
+        #self.pageindex=0  #page number, to deal with multiple pages
         self.index=0 #store the position index of the recognized result in the TextField
-        self.havedraw=0 #determine whether the user has modified the drawing
+        #self.havedraw=0 #determine whether the user has modified the drawing
         self.LoadContent()  
         self.previous=''
 
@@ -39,13 +39,7 @@ class UIEvents():
         self.DrawStatus = True
         self.EraserStatus = False
         #self.havedraw=0 #indicating haven't make any drawing
-        '''
-        if self.nextflag==0: # not in "next gage" mode, 
-            #self.LabelReminder.text='' 
-            self.text.text=self.text.text # the TextField will be kept if the user clicks recogntion again
-        if self.nextflag==2: # in "next page" mode
-            self.nextflag=3 # prevent repeated recognitions by changing the state
-            '''
+        
         self.LabelReminder.color=(1, .3, .3, 1)
         self.LabelReminder.text = 'Drawing in progress' # display in the interactive text in red
             
@@ -56,41 +50,17 @@ class UIEvents():
         self.EraserStatus = True
         self.LabelReminder.color=(1, .3, .3, 1)
         self.LabelReminder.text = 'Erasing in progress' # display in the interactive text in red
-        
-        '''
-        if self.nextflag==2:
-            self.nextflag=3 # prevent repeated recognitions by changing the state
-        '''
-    def NextPageClick(self,event):
-        # this function is used to create another page for writing
-        self.LabelReminder.color=(1, .3, .3, 1)
-        if self.text.text!='' and self.havedraw==1: #if the TextField is not empty and the user has drawn something
-            # allow clicking the next page
-            # otherwise it means either the user hasn't drawn anything or he forgets to click "Recognition" 
-            self.CurrentLabel =np.zeros((576,1021),np.uint8) 
-            self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
-            self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # display a new blank drawing page
-            #self.nextflag=1
-            self.LabelReminder.text = 'This is page '+str(self.pageindex+1)
-        else:
-            self.LabelReminder.text = 'Please "Draw" and "Recognize" for the current page first' # don't provide a new page
-            
-    def Close(self,event):
-        # stop the process and close the GUI
-        App.get_running_app().stop() 
-        Window.close()
 
     def EraseAllClick(self,event):
-        # abandon anything on the GUI, including the TextField
+        # abandon anything on the GUI, including things in the TextField
         self.LabelReminder.color=(1, .3, .3, 1)
         self.CurrentLabel =np.zeros((576,1021),np.uint8)
         self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,np.zeros((576,1021),np.uint8))
         self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # refresh the GUI
         self.LabelReminder.text='All drawings, including those on the previous pages are deleted'
-        #self.nextflag=0
         self.havedraw=0
         self.text.text='' # clear the TextField
-        self.previous=''
+        self.previous='' # clear the recongnition result of the previous cells
         
     def Recognition(self,event):
         # call the neural network and perform recogniton 
@@ -105,51 +75,24 @@ class UIEvents():
             if i<10:
                 cv2.imwrite(self.path+str(i)+'.jpg',image[i])
             else:
-                cv2.imwrite(self.path+'a'+'.jpg',image[i])
-        # save individual symbols as 11 images 
+                cv2.imwrite(self.path+'a'+'.jpg',image[i]) # save individual symbols as 11 images 
         #print(self.nextflag)
         try:
-            '''
-            if event=='':######### 3 removed case
-                self.text.text+=recognize(self.model,self.path,self.transform,3)
-                print('recognized',self.text.text) 
-                self.index=len(self.text.text)
-            else:
-            '''
-            if event=='w' or event=='e':
+            if event=='w' or event=='e': # if handwriting not in the last cell, recognize the current 11 cells
                 self.text.text=self.previous+recognize(self.model,self.path,self.transform,11)#self.text.text[0:self.index]+
                 #print('recognized',self.text.text) 
-                self.index=len(self.text.text)
-            elif event=='11':
+                self.index=len(self.text.text) # the index of current iteration recognition 
+                
+            elif event=='11': # if handwriting in the last cell, save the 3 cells that will be shifted out soon to 'previous'
                 self.previous+=recognize(self.model,self.path,self.transform,3)
                 #print('recognized',self.text.text) 
-     
-            '''
-            if self.nextflag==0:
-                    # in normal mode the TextField will be updated with the lateset handwritten expression
-                    self.text.text=recognize(self.model,self.path,self.transform)
-                    print('recognized',self.text.text)
-                    
-            if self.nextflag<3:  
-                    # if the "Next Page" is clicked, the TextField will keep the recognized result for every page
-                    # add the newly recognized results to previous results
-                    self.pageindex+=1
-                    #print('index',self.stringindex)
-                    self.index=len(self.text.text)
-                    self.text.text+=recognize(self.model,self.path,self.transform)
-                    print('recognized',self.text.text) 
-                    #self.nextflag=2  # ensure that repeated symbols will not be loaded if the user clicks recognition for multiple times
-            elif self.nextflag==3:
-                    # in this case the newly recognized results will replace the old ones
-                    self.text.text=self.text.text[0:self.index]+recognize(self.model,self.path,self.transform)
-                    print('recognized',self.text.text) # this will occur when the user modified some symbols on the current page
-            ''' 
         
         except: # this occurs very rare that saved images of math expression are lost
             self.havedraw=0
             self.LabelReminder.color=(1, .3, .3, 1) 
             self.LabelReminder.text = 'All drawings lost unexpectedly, Please draw it again'
-        if event=='w':
+            
+        if event=='w': # continue writing or erasing after recognition
             self.DrawStatus = True
             self.EraserStatus = False
         elif event=='e':
@@ -228,7 +171,7 @@ class UIEvents():
             self.LabelReminder.text = 'The left-hand expression equals to '+str(resultlist[0])+'  '+str(resultlist[1])
             
         elif empty==True:
-            self.LabelReminder.color=(1, .3, .3, 1) # if the expression is empty
+            self.LabelReminder.color=(1, .3, .3, 1) # if the expression is empty, give warning in red
             self.LabelReminder.text = 'Cannot calculate because nothing is recognized'
         else:
             self.LabelReminder.text = 'Wrong expression, please check it'
@@ -242,12 +185,11 @@ class UIEvents():
     def on_touch_move(self, x, touch):
         # when the mouse is still drawing
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
-        if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576:
+        if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576: # within the drawing zone
             # print "Mouse Up ( " + str(self.mouse_x) + " , " + str(self.mouse_y) + " )"
             if self.DrawInProgress and self.DrawStatus :
                 self.EditsMade = True
-                self.CurrentDrawPointVector.append([self.mouse_x,self.mouse_y])
-                # Display user' current drawing in dotted lines
+                self.CurrentDrawPointVector.append([self.mouse_x,self.mouse_y]) # Display user' current drawing in dotted lines
                 if self.mouse_x < 1021 - 1 and self.mouse_x > 0 + 1 and self.mouse_y < 576 - 1 and self.mouse_y > 0 + 1:
                     self.CurrentDisplayImage[self.mouse_y-1:self.mouse_y+1,self.mouse_x-1:self.mouse_x+1]=(250,100,100)
                     self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage)
@@ -256,7 +198,7 @@ class UIEvents():
         self.DrawInProgress = True
 
     def on_touch_up(self, x, touch): 
-        # when the mouse is released
+        # when the mouse is released, perpare to show the effect
         self.mouse_x,self.mouse_y = self.ConvertToImageCoords(touch.x,touch.y)
         if self.mouse_x >= 0 and self.mouse_x < 1021 and self.mouse_y >= 0 and self.mouse_y < 576: # if the mouse is within the drawing zone
             
@@ -264,28 +206,24 @@ class UIEvents():
                 self.FloodFillBlob(self.mouse_x,self.mouse_y,0)  # allow erasing if erase is clicked
                 
                 self.Recognition(event='e')
-            if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0:
-                 
-                 # if more than 1 coordinates has the mouse draw, enable drawing the 8-connected lines
+            if self.DrawInProgress and self.DrawStatus and len(self.CurrentDrawPointVector)>0: # if more than 1 coordinates has the mouse draw, enable drawing the 8-connected lines
                  self.DrawFilledPolygon()
             del self.CurrentDrawPointVector[:]
         
-        if self.DrawInProgress and self.DrawStatus: # to be ready for another stroke
-            del self.CurrentDrawPointVector[:]
-            #cause textfiled to change
-            if self.mouse_x<1000:
+        if self.DrawInProgress and self.DrawStatus: # to be ready to draw the next stroke
+            del self.CurrentDrawPointVector[:] #claer the current stroke array
+
+            if self.mouse_x<1000: # if the mouse is within the writing area
                 self.Recognition(event='w')
             if self.mouse_x>912 and self.mouse_x<998 and self.CurrentLabel[:,912:998].any()!= 0 and self.mouse_y>217 and self.mouse_y< 312:
-                #self.nextflag=1
-                self.DrawStatus = False
+                # if something is written in the last cell, shift the equation left for 3 cells
+                self.DrawStatus = False 
                 self.Recognition(event='11')
-                self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)
-                #print(self.CurrentLabel.shape)
+                self.CurrentLabel=np.concatenate((self.CurrentLabel[:,270:],np.zeros((576,270),np.uint8)),axis=1)# shift by padding zeros on the right
                 self.CurrentDisplayImage =fx.CreateDisplayImage(self.CurrentDicom,self.CurrentLabel)
-                self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) 
-                #self.DrawStatus = False
+                self.ImageViewer.texture = fx.RenderDisplayImage(self.CurrentDisplayImage) # update the display
                 self.EraserStatus = False
-                #self.DrawStatus = True
+
         
         self.DrawInProgress = False
 

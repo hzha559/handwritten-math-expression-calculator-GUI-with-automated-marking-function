@@ -61,15 +61,7 @@ class WorkPanel(RelativeLayout): # the work panel contains all the buttons
         btnErase.color = (1, 1, 1, 1)
         btnErase.bind(on_release=self.uievents.EraseClick) # bind the buttons with "EraseClick" function in UIEvent
         self.add_widget(btnErase)
-        '''
-        btnNextPage = Button(text="Next Page")
-        btnNextPage.size_hint = (None, None)
-        btnNextPage.size = (130, 40)
-        btnNextPage.pos = (1040, 260-152)
-        btnNextPage.color = (1, 1, 1, 1)
-        btnNextPage.bind(on_release=self.uievents.NextPageClick) # bind the buttons with "NextPageClick" function in UIEvent
-        self.add_widget(btnNextPage)
-        '''
+
         btnEraseAll = Button(text="Erase All")
         btnEraseAll.size_hint = (None, None)
         btnEraseAll.size = (130, 40)
@@ -77,23 +69,7 @@ class WorkPanel(RelativeLayout): # the work panel contains all the buttons
         btnEraseAll.color = (1, 1, 1, 1)
         btnEraseAll.bind(on_release=self.uievents.EraseAllClick) # bind the buttons with "EraseAllClick" function in UIEvent
         self.add_widget(btnEraseAll)
-        '''
-        btnRecogntion = Button(text="Recognition")
-        btnRecogntion.size_hint = (None, None)
-        btnRecogntion.size = (130, 40)
-        btnRecogntion.pos = (1040, 170-152)
-        btnRecogntion.color = (1, 1, 1, 1)
-        btnRecogntion.bind(on_release=self.uievents.Recognition) # bind the buttons with "Recognition" function in UIEvent
-        self.add_widget(btnRecogntion)
         
-        Close = Button(text="Close")
-        Close.size_hint = (None, None)
-        Close.size = (130, 40)
-        Close.pos = (1040, 110-152)
-        Close.color = (1, 1, 1, 1)
-        Close.bind(on_release=self.uievents.Close) # bind the buttons with "Close" function in UIEvent
-        self.add_widget(Close)
-        '''
         Calculate = Button(text="Calculate")
         Calculate.size_hint = (None, None)
         Calculate.size = (130, 40)
@@ -115,7 +91,8 @@ class MainWindow(RelativeLayout):
         ImageViewer.pos = (0,240-152)
         self.add_widget(ImageViewer)
         
-        # The reason to put the interactive texts and the TextField in the MainWindow is that MainWindow can change according to time
+        # The reason to put the interactive texts and the TextField in the MainWindow is that MainWindow is updated immediately
+        # workpanel is static
         
         LabelReminder = Label(font_size="15sp", text="", color=(1, .3, .3, 1), halign='left', text_size=(300, 150))
         LabelReminder.size_hint = (None, None)  # the interactive text, which is initially set to red

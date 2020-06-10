@@ -7,7 +7,7 @@ from kivy.graphics.texture import Texture
 # Function to find and draw contours - uses opencv functions findContours() and drawContours()
 def DrawContours(net_img, dicom_img):
     img = dicom_img.copy()
-    # draw blue dotted lines when the user is writing
+    # draw blue dotted lines when the user is drawing to give user a hint what is the possible result of the line
     ret, threshHuman = cv2.threshold(net_img, 249, 255, 0)
     contours, _ = cv2.findContours(threshHuman, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(img, contours, -1, (0, 0, 0), 3)# this affect the actual color of drawing
