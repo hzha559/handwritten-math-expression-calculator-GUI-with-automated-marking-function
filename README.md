@@ -1,5 +1,8 @@
 A GUI of handwritten-calculator-with-automated-marking function.
 
+------------------to the marker-------------------------------: The code repo for training the network can be found at https://github.com/hzha559/math-symbol-recognition-using-Resnet-18 .
+The code for the GUI design can be found at https://bitbucket.org/haolingzhao/deep-learning/src/master/ (This current repo is just a final version which is created last month).
+
 I made this project because I think it will make the life easier for the young kids to practice their calculation skills.
 
 Written with Pytorch and the neural network is Resnet-18, the validation accuracy is 97.7%.
